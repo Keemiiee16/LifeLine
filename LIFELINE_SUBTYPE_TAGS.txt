@@ -1,0 +1,78 @@
+LIFELINE SUBTYPE TOPIC TAGS
+===========================
+
+FORMAT
+lifeline:type=<type> lifeline:subtype=<subtype> lifeline:use=<use>
+
+EXAMPLE GROCERY STORE
+lifeline:type=store lifeline:subtype=grocery lifeline:use=shopping lifeline:use=workplace
+
+SCHOOL SUBTYPES
+lifeline:type=school lifeline:subtype=preschool
+lifeline:type=school lifeline:subtype=daycare
+lifeline:type=school lifeline:subtype=elementary
+lifeline:type=school lifeline:subtype=middle_school
+lifeline:type=school lifeline:subtype=high_school
+lifeline:type=school lifeline:subtype=university
+lifeline:type=school lifeline:subtype=trade_school
+
+STORE SUBTYPES
+grocery
+clothing
+electronics
+beauty
+pharmacy
+convenience
+department
+furniture
+bookstore
+toy_store
+pet_store
+
+RESTAURANT SUBTYPES
+fast_food
+diner
+mexican
+italian
+chinese
+japanese
+korean
+indian
+seafood
+steakhouse
+soul_food
+vegan
+
+CAFE SUBTYPES
+coffee_shop
+bakery
+tea_shop
+
+ENTERTAINMENT SUBTYPES
+movie_theater
+arcade
+bowling
+museum
+amusement
+skating_rink
+
+VENUE SUBTYPES
+event_hall
+stadium
+arena
+banquet_hall
+wedding_venue
+concert_venue
+
+PARK SUBTYPES (OPTIONAL)
+playground
+dog_park
+sports_park
+nature_park
+
+NOTES
+- Use ONE lifeline:type= tag.
+- Use at most ONE lifeline:subtype= tag.
+- Multiple lifeline:use= tags are allowed.
+- A park does not need a subtype unless you want to make it more specific.
+- LifeLine stores the subtype in Supabase so it can be passed to AI behavior later.
