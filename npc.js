@@ -25,166 +25,62 @@ const EDIT_FLOW_PREFIX = "npc_edit";
 const SETTINGS_PREFIX = "npc_settings";
 const WORLD_PREFIX = "npc_world";
 
-const LOCATION_TYPES_COMMON = [
-  { label: "Residence / Home", value: "residence" },
+const WORLD_LOCATION_TYPES = [
+  { label: "Neighborhood", value: "neighborhood" },
+  { label: "Residence", value: "residence" },
   { label: "School", value: "school" },
-  { label: "Workplace / Office", value: "workplace" },
-  { label: "Store / Shop", value: "store" },
-  { label: "Restaurant", value: "restaurant" },
-  { label: "Café / Coffee Shop", value: "cafe" },
-  { label: "Bar / Lounge", value: "bar" },
-  { label: "Nightclub", value: "nightclub" },
+  { label: "Workplace", value: "workplace" },
+  { label: "Store", value: "store" },
+  { label: "Restaurant / Café", value: "restaurant_cafe" },
   { label: "Mall", value: "mall" },
-  { label: "Park / Playground", value: "park" },
-  { label: "Hospital", value: "hospital" },
-  { label: "Clinic / Doctor", value: "clinic" },
-  { label: "Gym / Fitness", value: "gym" },
+  { label: "Park", value: "park" },
+  { label: "Hospital / Clinic", value: "hospital_clinic" },
+  { label: "Vet Clinic / Veterinary Hospital", value: "vet_clinic" },
+  { label: "Pet Store", value: "pet_store" },
+  { label: "Pet Park / Dog Park", value: "pet_park" },
+  { label: "Pet Groomer", value: "pet_groomer" },
+  { label: "Pet Daycare / Boarding", value: "pet_daycare" },
+  { label: "Animal Shelter / Rescue", value: "animal_shelter" },
+  { label: "Pet Café / Pet-Friendly Venue", value: "pet_cafe" },
+  { label: "Government / Public Service", value: "government_public_service" },
   { label: "Entertainment", value: "entertainment" },
+  { label: "Gym", value: "gym" },
+  { label: "Transit", value: "transit" },
+  { label: "Religious / Community", value: "religious_community" },
+  { label: "Other / Custom Type", value: "other" },
+  { label: "Unknown", value: "unknown" },
 ];
 
-const LOCATION_TYPES_MORE = [
-  { label: "Library", value: "library" },
-  { label: "Government / City Service", value: "government" },
-  { label: "Police Station", value: "police" },
-  { label: "Fire Station", value: "fire_station" },
-  { label: "Transit Station", value: "transit" },
-  { label: "Airport", value: "airport" },
-  { label: "Religious Location", value: "religious" },
-  { label: "Community Center", value: "community" },
-  { label: "Salon / Barber", value: "salon" },
-  { label: "Daycare / Childcare", value: "daycare" },
-  { label: "Hotel", value: "hotel" },
-  { label: "Event Venue", value: "venue" },
-  { label: "Generic Public Place", value: "public" },
-  { label: "Other", value: "other" },
-];
-
-const SUPPORTED_LOCATION_TYPES = new Set([
-  ...LOCATION_TYPES_COMMON.map((item) => item.value),
-  ...LOCATION_TYPES_MORE.map((item) => item.value),
-]);
-
-const SUPPORTED_LOCATION_USES = new Set([
-  "workplace",
-  "school",
-  "shopping",
-  "dining",
-  "recreation",
-]);
-
-const SUPPORTED_LOCATION_SUBTYPES = {
-  school: new Set([
-    "preschool",
-    "daycare",
-    "elementary",
-    "middle_school",
-    "high_school",
-    "university",
-    "trade_school",
-  ]),
-  store: new Set([
-    "grocery",
-    "clothing",
-    "electronics",
-    "beauty",
-    "pharmacy",
-    "convenience",
-    "department",
-    "furniture",
-    "bookstore",
-    "toy_store",
-    "pet_store",
-  ]),
-  restaurant: new Set([
-    "fast_food",
-    "diner",
-    "mexican",
-    "italian",
-    "chinese",
-    "japanese",
-    "korean",
-    "indian",
-    "seafood",
-    "steakhouse",
-    "soul_food",
-    "vegan",
-  ]),
-  cafe: new Set([
-    "coffee_shop",
-    "bakery",
-    "tea_shop",
-  ]),
-  entertainment: new Set([
-    "movie_theater",
-    "arcade",
-    "bowling",
-    "museum",
-    "amusement",
-    "skating_rink",
-  ]),
-  venue: new Set([
-    "event_hall",
-    "stadium",
-    "arena",
-    "banquet_hall",
-    "wedding_venue",
-    "concert_venue",
-  ]),
-  park: new Set([
-    "playground",
-    "dog_park",
-    "sports_park",
-    "nature_park",
-  ]),
-};
-
-const WORLD_CHANNEL_TYPES = new Set([
-  ChannelType.GuildText,
-  ChannelType.GuildAnnouncement,
-  ChannelType.GuildForum,
-]);
+const SUPPORTED_LOCATION_TYPES = new Set(
+  WORLD_LOCATION_TYPES.map((item) => item.value)
+);
 
 export const npcCommand = {
   data: new SlashCommandBuilder()
     .setName("npc")
     .setDescription("LifeLine NPC simulator commands")
-
     .addSubcommand((sub) =>
-      sub
-        .setName("status")
-        .setDescription("Check the NPC simulator status")
+      sub.setName("status").setDescription("Check the NPC simulator status")
     )
-
     .addSubcommand((sub) =>
-      sub
-        .setName("create")
-        .setDescription("Create a new NPC with guided pop-out setup")
+      sub.setName("create").setDescription("Create a new NPC with guided pop-out setup")
     )
-
     .addSubcommand((sub) =>
       sub
         .setName("edit")
         .setDescription("Edit an existing NPC")
         .addStringOption((opt) =>
-          opt
-            .setName("name")
-            .setDescription("NPC name to edit")
-            .setRequired(true)
+          opt.setName("name").setDescription("NPC name to edit").setRequired(true)
         )
     )
-
     .addSubcommand((sub) =>
       sub
         .setName("view")
         .setDescription("View an NPC profile")
         .addStringOption((opt) =>
-          opt
-            .setName("name")
-            .setDescription("NPC name")
-            .setRequired(true)
+          opt.setName("name").setDescription("NPC name").setRequired(true)
         )
     )
-
     .addSubcommand((sub) =>
       sub
         .setName("search")
@@ -196,13 +92,9 @@ export const npcCommand = {
             .setRequired(false)
         )
     )
-
     .addSubcommand((sub) =>
-      sub
-        .setName("settings")
-        .setDescription("Open LifeLine server settings")
+      sub.setName("settings").setDescription("Open LifeLine server settings")
     )
-
     .addSubcommand((sub) =>
       sub
         .setName("pause")
@@ -225,21 +117,15 @@ export const npcCommand = {
             .setRequired(false)
         )
     )
-
     .addSubcommand((sub) =>
-      sub
-        .setName("undo")
-        .setDescription("Undo the most recent undoable major NPC event")
+      sub.setName("undo").setDescription("Undo the most recent undoable major NPC event")
     )
-
     .addSubcommandGroup((group) =>
       group
         .setName("world")
         .setDescription("World/location setup")
         .addSubcommand((sub) =>
-          sub
-            .setName("setup")
-            .setDescription("Scan and classify Discord channels/categories")
+          sub.setName("setup").setDescription("Scan and classify Discord channels/categories")
         )
     ),
 
@@ -254,10 +140,7 @@ export const npcCommand = {
     const group = interaction.options.getSubcommandGroup(false);
     const subcommand = interaction.options.getSubcommand();
 
-    if (group === "world" && subcommand === "setup") {
-      return openWorldSetup(interaction);
-    }
-
+    if (group === "world" && subcommand === "setup") return openWorldSetup(interaction);
     if (subcommand === "status") return showStatus(interaction);
     if (subcommand === "create") return startCreate(interaction);
     if (subcommand === "edit") return startEdit(interaction);
@@ -271,7 +154,6 @@ export const npcCommand = {
 
 async function showStatus(interaction) {
   await interaction.deferReply({ flags: MessageFlags.Ephemeral });
-
   const settings = await ensureGuildSettings(interaction.guildId);
   const activeCount = await getActiveNpcCount(interaction.guildId);
 
@@ -281,26 +163,10 @@ async function showStatus(interaction) {
     .addFields(
       { name: "Discord", value: "✅ Connected", inline: true },
       { name: "Supabase", value: "✅ Connected", inline: true },
-      {
-        name: "Simulation",
-        value: settings.simulation_paused ? "⏸️ Paused" : "▶️ Running",
-        inline: true,
-      },
-      {
-        name: "Timezone",
-        value: settings.timezone || "America/Chicago",
-        inline: true,
-      },
-      {
-        name: "Active NPCs",
-        value: `${activeCount} / ${settings.max_active_npcs ?? 15}`,
-        inline: true,
-      },
-      {
-        name: "Pregnancy Rule",
-        value: `${settings.pregnancy_days ?? 21} days`,
-        inline: true,
-      }
+      { name: "Simulation", value: settings.simulation_paused ? "⏸️ Paused" : "▶️ Running", inline: true },
+      { name: "Timezone", value: settings.timezone || "America/Chicago", inline: true },
+      { name: "Active NPCs", value: `${activeCount} / ${settings.max_active_npcs ?? 15}`, inline: true },
+      { name: "Pregnancy Rule", value: `${settings.pregnancy_days ?? 21} days`, inline: true }
     )
     .setTimestamp();
 
@@ -360,7 +226,6 @@ async function startCreate(interaction) {
 
 async function startEdit(interaction) {
   await interaction.deferReply({ flags: MessageFlags.Ephemeral });
-
   const npcName = interaction.options.getString("name", true);
 
   const { data, error } = await supabase
@@ -371,17 +236,8 @@ async function startEdit(interaction) {
     .limit(1)
     .maybeSingle();
 
-  if (error) {
-    return interaction.editReply({
-      content: `Could not load that NPC: ${error.message}`,
-      });
-  }
-
-  if (!data) {
-    return interaction.editReply({
-      content: `I couldn't find an NPC named **${npcName}**.`,
-      });
-  }
+  if (error) return interaction.editReply({ content: `Could not load that NPC: ${error.message}` });
+  if (!data) return interaction.editReply({ content: `I couldn't find an NPC named **${npcName}**.` });
 
   const menu = new StringSelectMenuBuilder()
     .setCustomId(`${EDIT_FLOW_PREFIX}:section:${data.id}`)
@@ -409,74 +265,38 @@ async function startEdit(interaction) {
 
 async function viewNpc(interaction) {
   await interaction.deferReply({ flags: MessageFlags.Ephemeral });
-
   const npcName = interaction.options.getString("name", true);
 
   const { data, error } = await supabase
     .from("npc_profiles")
-    .select(`
-      *,
-      npc_transportation(*),
-      npc_finances(*)
-    `)
+    .select(`*,npc_transportation(*),npc_finances(*)`)
     .eq("guild_id", interaction.guildId)
     .ilike("name", npcName)
     .limit(1)
     .maybeSingle();
 
-  if (error) {
-    return interaction.editReply(`Could not load NPC: ${error.message}`);
-  }
-
-  if (!data) {
-    return interaction.editReply(`I couldn't find an NPC named **${npcName}**.`);
-  }
+  if (error) return interaction.editReply(`Could not load NPC: ${error.message}`);
+  if (!data) return interaction.editReply(`I couldn't find an NPC named **${npcName}**.`);
 
   const embed = new EmbedBuilder()
     .setTitle(data.name)
     .setDescription(data.short_description || "No description set.")
     .addFields(
-      {
-        name: "Age",
-        value: `${data.display_age} • ${pretty(data.life_stage)}`,
-        inline: true,
-      },
-      {
-        name: "Importance",
-        value: pretty(data.importance),
-        inline: true,
-      },
-      {
-        name: "Activity",
-        value: pretty(data.activity_level),
-        inline: true,
-      },
-      {
-        name: "Status",
-        value: pretty(data.status),
-        inline: true,
-      },
-      {
-        name: "Pronouns",
-        value: data.pronouns || "Not set",
-        inline: true,
-      },
-      {
-        name: "Romance",
-        value: data.romance_enabled ? "Enabled" : "Disabled",
-        inline: true,
-      }
+      { name: "Age", value: `${data.display_age} • ${pretty(data.life_stage)}`, inline: true },
+      { name: "Importance", value: pretty(data.importance), inline: true },
+      { name: "Activity", value: pretty(data.activity_level), inline: true },
+      { name: "Status", value: pretty(data.status), inline: true },
+      { name: "Pronouns", value: data.pronouns || "Not set", inline: true },
+      { name: "Romance", value: data.romance_enabled ? "Enabled" : "Disabled", inline: true }
     )
     .setTimestamp();
 
   if (data.avatar_url) embed.setThumbnail(data.avatar_url);
-
   return interaction.editReply({ embeds: [embed] });
 }
 
 async function searchNpcs(interaction) {
   await interaction.deferReply({ flags: MessageFlags.Ephemeral });
-
   const query = interaction.options.getString("query")?.trim();
 
   let request = supabase
@@ -493,18 +313,11 @@ async function searchNpcs(interaction) {
   }
 
   const { data, error } = await request;
-
-  if (error) {
-    return interaction.editReply(`Search failed: ${error.message}`);
-  }
-
-  if (!data?.length) {
-    return interaction.editReply("No NPCs matched that search.");
-  }
+  if (error) return interaction.editReply(`Search failed: ${error.message}`);
+  if (!data?.length) return interaction.editReply("No NPCs matched that search.");
 
   const lines = data.map(
-    (npc) =>
-      `• **${npc.name}** — ${npc.display_age}, ${pretty(npc.life_stage)} • ${pretty(npc.status)}`
+    (npc) => `• **${npc.name}** — ${npc.display_age}, ${pretty(npc.life_stage)} • ${pretty(npc.status)}`
   );
 
   return interaction.editReply({
@@ -524,11 +337,7 @@ async function openSettings(interaction) {
   const toggleButton = new ButtonBuilder()
     .setCustomId(`${SETTINGS_PREFIX}:toggle_simulation`)
     .setLabel(settings.simulation_paused ? "Turn Simulation ON" : "Turn Simulation OFF")
-    .setStyle(
-      settings.simulation_paused
-        ? ButtonStyle.Success
-        : ButtonStyle.Danger
-    );
+    .setStyle(settings.simulation_paused ? ButtonStyle.Success : ButtonStyle.Danger);
 
   const lifeChannel = new ButtonBuilder()
     .setCustomId(`${SETTINGS_PREFIX}:life_channel`)
@@ -566,7 +375,7 @@ async function openSettings(interaction) {
 async function openWorldSetup(interaction) {
   const scan = new ButtonBuilder()
     .setCustomId(`${WORLD_PREFIX}:scan`)
-    .setLabel("Scan Tagged Locations")
+    .setLabel("Scan Server")
     .setStyle(ButtonStyle.Primary);
 
   const review = new ButtonBuilder()
@@ -582,20 +391,15 @@ async function openWorldSetup(interaction) {
   return interaction.reply({
     embeds: [
       new EmbedBuilder()
-        .setTitle("World Setup")
+        .setTitle("World Setup v2 • Pet + Custom Types")
         .setDescription(
-          "LifeLine now identifies places from **channel topic tags** instead of guessing from channel names.\n\n" +
-          "Example: `lifeline:type=store lifeline:subtype=grocery`\n" +
-          "Optional uses: `lifeline:use=shopping lifeline:use=workplace`\n\n" +
-          "**Scan Tagged Locations** reads every accessible tagged channel.\n" +
-          "**Review Locations** shows what LifeLine currently knows.\n" +
-          "**Edit Location** lets you click a Discord channel and manually override it.\n\n" +
-          "Untagged or invalid locations can be sent to your **Admin Notifications** channel."
+          "LifeLine can scan the categories and channels it can access, then build the NPC world location registry.\n\n" +
+          "**Scan Server** finds channels/categories.\n" +
+          "**Review Locations** shows current classifications.\n" +
+          "**Edit Location** lets you click a Discord channel/category and correct its type."
         ),
     ],
-    components: [
-      new ActionRowBuilder().addComponents(scan, review, edit),
-    ],
+    components: [new ActionRowBuilder().addComponents(scan, review, edit)],
     flags: MessageFlags.Ephemeral,
   });
 }
@@ -614,23 +418,17 @@ async function pauseSystem(interaction) {
       .update({ simulation_paused: newValue })
       .eq("guild_id", interaction.guildId);
 
-    if (error) {
-      return interaction.editReply({
-        content: `Could not update simulator: ${error.message}`,
-          });
-    }
+    if (error) return interaction.editReply({ content: `Could not update simulator: ${error.message}` });
 
     return interaction.editReply({
       content: newValue
         ? "⏸️ The entire NPC simulator is now paused."
         : "▶️ The entire NPC simulator is running again.",
-      });
+    });
   }
 
   if (!target) {
-    return interaction.editReply({
-      content: "You need to provide a target name for that pause scope.",
-      });
+    return interaction.editReply({ content: "You need to provide a target name for that pause scope." });
   }
 
   if (scope === "npc") {
@@ -644,31 +442,23 @@ async function pauseSystem(interaction) {
 
     if (error || !data) {
       return interaction.editReply({
-        content: error
-          ? `Could not load NPC: ${error.message}`
-          : `I couldn't find **${target}**.`,
-          });
+        content: error ? `Could not load NPC: ${error.message}` : `I couldn't find **${target}**.`,
+      });
     }
 
     const nextStatus = data.status === "paused" ? "active" : "paused";
-
     const { error: updateError } = await supabase
       .from("npc_profiles")
       .update({ status: nextStatus })
       .eq("id", data.id);
 
-    if (updateError) {
-      return interaction.editReply({
-        content: `Could not update NPC: ${updateError.message}`,
-          });
-    }
+    if (updateError) return interaction.editReply({ content: `Could not update NPC: ${updateError.message}` });
 
     return interaction.editReply({
-      content:
-        nextStatus === "paused"
-          ? `⏸️ **${data.name}** is now paused.`
-          : `▶️ **${data.name}** is active again.`,
-      });
+      content: nextStatus === "paused"
+        ? `⏸️ **${data.name}** is now paused.`
+        : `▶️ **${data.name}** is active again.`,
+    });
   }
 
   if (scope === "location") {
@@ -685,27 +475,22 @@ async function pauseSystem(interaction) {
         content: error
           ? `Could not load location: ${error.message}`
           : `I couldn't find **${target}** in the world registry.`,
-          });
+      });
     }
 
     const nextPaused = !data.paused;
-
     const { error: updateError } = await supabase
       .from("npc_world_locations")
       .update({ paused: nextPaused })
       .eq("id", data.id);
 
-    if (updateError) {
-      return interaction.editReply({
-        content: `Could not update location: ${updateError.message}`,
-          });
-    }
+    if (updateError) return interaction.editReply({ content: `Could not update location: ${updateError.message}` });
 
     return interaction.editReply({
       content: nextPaused
         ? `⏸️ **${data.name}** is now paused for autonomous NPC activity.`
         : `▶️ **${data.name}** is active again.`,
-      });
+    });
   }
 }
 
@@ -722,13 +507,8 @@ async function undoLast(interaction) {
     .limit(1)
     .maybeSingle();
 
-  if (error) {
-    return interaction.editReply(`Could not check undo history: ${error.message}`);
-  }
-
-  if (!data) {
-    return interaction.editReply("There are no recent undoable NPC events.");
-  }
+  if (error) return interaction.editReply(`Could not check undo history: ${error.message}`);
+  if (!data) return interaction.editReply("There are no recent undoable NPC events.");
 
   return interaction.editReply({
     embeds: [
@@ -736,8 +516,7 @@ async function undoLast(interaction) {
         .setTitle("Undo Available")
         .setDescription(
           `**${data.description || data.action_type}**\n\n` +
-          "The audit record is ready. Full automatic state restoration " +
-          "will be connected when the life-event engine is added."
+          "The audit record is ready. Full automatic state restoration will be connected when the life-event engine is added."
         ),
     ],
   });
@@ -748,128 +527,6 @@ export async function handleNpcComponent(interaction) {
 
   if (interaction.isModalSubmit() && id === `${CREATE_FLOW_PREFIX}:basic`) {
     return handleCreateBasic(interaction);
-  }
-
-  if (interaction.isButton() && id.startsWith(`${CREATE_FLOW_PREFIX}:continue:`)) {
-    const npcId = id.split(":")[2];
-    return openCreatePersonality(interaction, npcId);
-  }
-
-  if (interaction.isModalSubmit() && id.startsWith(`${CREATE_FLOW_PREFIX}:personality:`)) {
-    const npcId = id.split(":")[2];
-    return saveCreatePersonality(interaction, npcId);
-  }
-
-  if (interaction.isButton() && id.startsWith(`${CREATE_FLOW_PREFIX}:details_open:`)) {
-    return openCreateDetails(interaction, id.split(":")[2]);
-  }
-  if (interaction.isModalSubmit() && id.startsWith(`${CREATE_FLOW_PREFIX}:details:`)) {
-    return saveCreateDetails(interaction, id.split(":")[2]);
-  }
-  if (interaction.isButton() && id.startsWith(`${CREATE_FLOW_PREFIX}:likes_open:`)) {
-    return openCreateLikes(interaction, id.split(":")[2]);
-  }
-  if (interaction.isModalSubmit() && id.startsWith(`${CREATE_FLOW_PREFIX}:likes:`)) {
-    return saveCreateLikes(interaction, id.split(":")[2]);
-  }
-  if (interaction.isButton() && id.startsWith(`${CREATE_FLOW_PREFIX}:home_open:`)) {
-    return openCreateHome(interaction, id.split(":")[2]);
-  }
-  if (interaction.isChannelSelectMenu() && id.startsWith(`${CREATE_FLOW_PREFIX}:home_channel:`)) {
-    return saveCreateHomeChannel(interaction, id.split(":")[2]);
-  }
-  if (interaction.isChannelSelectMenu() && id.startsWith(`${CREATE_FLOW_PREFIX}:home_category:`)) {
-    return saveCreateHomeCategory(interaction, id.split(":")[2]);
-  }
-  if (interaction.isButton() && id.startsWith(`${CREATE_FLOW_PREFIX}:home_details_open:`)) {
-    return openCreateHomeDetails(interaction, id.split(":")[2]);
-  }
-  if (interaction.isModalSubmit() && id.startsWith(`${CREATE_FLOW_PREFIX}:home_details:`)) {
-    return saveCreateHomeDetails(interaction, id.split(":")[2]);
-  }
-  if (interaction.isButton() && id.startsWith(`${CREATE_FLOW_PREFIX}:school_open:`)) {
-    return openCreateSchool(interaction, id.split(":")[2]);
-  }
-  if (interaction.isChannelSelectMenu() && id.startsWith(`${CREATE_FLOW_PREFIX}:school_channel:`)) {
-    return saveCreateSchoolChannel(interaction, id.split(":")[2]);
-  }
-  if (interaction.isButton() && id.startsWith(`${CREATE_FLOW_PREFIX}:school_skip:`)) {
-    return skipCreateSchool(interaction, id.split(":")[2]);
-  }
-  if (interaction.isButton() && id.startsWith(`${CREATE_FLOW_PREFIX}:school_details_open:`)) {
-    return openCreateSchoolDetails(interaction, id.split(":")[2]);
-  }
-  if (interaction.isModalSubmit() && id.startsWith(`${CREATE_FLOW_PREFIX}:school:`)) {
-    return saveCreateSchool(interaction, id.split(":")[2]);
-  }
-  if (interaction.isButton() && id.startsWith(`${CREATE_FLOW_PREFIX}:job_open:`)) {
-    return openCreateJob(interaction, id.split(":")[2]);
-  }
-  if (interaction.isStringSelectMenu() && id.startsWith(`${CREATE_FLOW_PREFIX}:job_status:`)) {
-    return saveCreateJobStatus(interaction, id.split(":")[2]);
-  }
-  if (interaction.isChannelSelectMenu() && id.startsWith(`${CREATE_FLOW_PREFIX}:job_channel:`)) {
-    return saveCreateJobChannel(interaction, id.split(":")[2]);
-  }
-  if (interaction.isButton() && id.startsWith(`${CREATE_FLOW_PREFIX}:job_channel_skip:`)) {
-    return skipCreateJobChannel(interaction, id.split(":")[2]);
-  }
-  if (interaction.isButton() && id.startsWith(`${CREATE_FLOW_PREFIX}:job_details_open:`)) {
-    return openCreateJobDetails(interaction, id.split(":")[2]);
-  }
-  if (interaction.isModalSubmit() && id.startsWith(`${CREATE_FLOW_PREFIX}:job:`)) {
-    return saveCreateJob(interaction, id.split(":")[2]);
-  }
-  if (interaction.isButton() && id.startsWith(`${CREATE_FLOW_PREFIX}:family_open:`)) {
-    return openCreateFamily(interaction, id.split(":")[2]);
-  }
-  if (interaction.isModalSubmit() && id.startsWith(`${CREATE_FLOW_PREFIX}:family:`)) {
-    return saveCreateFamily(interaction, id.split(":")[2]);
-  }
-  if (interaction.isButton() && id.startsWith(`${CREATE_FLOW_PREFIX}:relationships_open:`)) {
-    return openCreateRelationships(interaction, id.split(":")[2]);
-  }
-  if (interaction.isModalSubmit() && id.startsWith(`${CREATE_FLOW_PREFIX}:relationships:`)) {
-    return saveCreateRelationships(interaction, id.split(":")[2]);
-  }
-  if (interaction.isButton() && id.startsWith(`${CREATE_FLOW_PREFIX}:life_open:`)) {
-    return openCreateLifePrefs(interaction, id.split(":")[2]);
-  }
-  if (interaction.isModalSubmit() && id.startsWith(`${CREATE_FLOW_PREFIX}:life:`)) {
-    return saveCreateLifePrefs(interaction, id.split(":")[2]);
-  }
-  if (interaction.isButton() && id.startsWith(`${CREATE_FLOW_PREFIX}:ai_open:`)) {
-    return openCreateAI(interaction, id.split(":")[2]);
-  }
-  if (interaction.isModalSubmit() && id.startsWith(`${CREATE_FLOW_PREFIX}:ai:`)) {
-    return saveCreateAI(interaction, id.split(":")[2]);
-  }
-  if (interaction.isButton() && id.startsWith(`${CREATE_FLOW_PREFIX}:autonomy_open:`)) {
-    return openCreateAutonomy(interaction, id.split(":")[2]);
-  }
-  if (interaction.isStringSelectMenu() && id.startsWith(`${CREATE_FLOW_PREFIX}:natural_development:`)) {
-    return saveNaturalDevelopment(interaction, id.split(":")[2]);
-  }
-  if (interaction.isButton() && id.startsWith(`${CREATE_FLOW_PREFIX}:autonomy_details_open:`)) {
-    return openCreateAutonomyDetails(interaction, id.split(":")[2]);
-  }
-  if (interaction.isModalSubmit() && id.startsWith(`${CREATE_FLOW_PREFIX}:autonomy:`)) {
-    return saveCreateAutonomy(interaction, id.split(":")[2]);
-  }
-  if (interaction.isButton() && id.startsWith(`${CREATE_FLOW_PREFIX}:transport_open:`)) {
-    return openCreateTransport(interaction, id.split(":")[2]);
-  }
-  if (interaction.isStringSelectMenu() && id.startsWith(`${CREATE_FLOW_PREFIX}:transport:`)) {
-    return saveCreateTransport(interaction, id.split(":")[2]);
-  }
-  if (interaction.isStringSelectMenu() && id.startsWith(`${CREATE_FLOW_PREFIX}:vehicle:`)) {
-    return saveCreateVehicle(interaction, id.split(":")[2]);
-  }
-  if (interaction.isButton() && id.startsWith(`${CREATE_FLOW_PREFIX}:review:`)) {
-    return showCreateReview(interaction, id.split(":")[2]);
-  }
-  if (interaction.isButton() && id.startsWith(`${CREATE_FLOW_PREFIX}:finish:`)) {
-    return finishCreateNpc(interaction, id.split(":")[2]);
   }
 
   if (interaction.isStringSelectMenu() && id.startsWith(`${EDIT_FLOW_PREFIX}:section:`)) {
@@ -920,20 +577,19 @@ export async function handleNpcComponent(interaction) {
     return showWorldLocationTypePicker(interaction, interaction.values[0]);
   }
 
-  if (interaction.isButton() && id.startsWith(`${WORLD_PREFIX}:unknown_classify:`)) {
-    const locationId = id.split(":")[2];
-    return openUnknownLocationClassifier(interaction, locationId);
-  }
-
-  if (interaction.isButton() && id.startsWith(`${WORLD_PREFIX}:unknown_ignore:`)) {
-    const locationId = id.split(":")[2];
-    return ignoreUnknownLocation(interaction, locationId);
-  }
-
   if (interaction.isStringSelectMenu() && id.startsWith(`${WORLD_PREFIX}:edit_type:`)) {
-    const parts = id.split(":");
-    const locationId = parts[2];
+    const locationId = id.split(":").pop();
     return saveWorldLocationType(interaction, locationId, interaction.values[0]);
+  }
+
+  if (interaction.isButton() && id.startsWith(`${WORLD_PREFIX}:custom_open:`)) {
+    const locationId = id.split(":").pop();
+    return openCustomLocationTypeModal(interaction, locationId);
+  }
+
+  if (interaction.isModalSubmit() && id.startsWith(`${WORLD_PREFIX}:custom_type:`)) {
+    const locationId = id.split(":").pop();
+    return saveCustomLocationType(interaction, locationId);
   }
 }
 
@@ -949,14 +605,11 @@ async function handleCreateBasic(interaction) {
   const age = Number.parseInt(ageRaw, 10);
 
   if (!Number.isInteger(age) || age < 0 || age > 130) {
-    return interaction.editReply({
-      content: "Age must be a whole number between 0 and 130.",
-      });
+    return interaction.editReply({ content: "Age must be a whole number between 0 and 130." });
   }
 
   const lifeStage = lifeStageFromAge(age);
 
-  // Temporary draft row. The rest of the guided setup will update it.
   const { data, error } = await supabase
     .from("npc_profiles")
     .insert({
@@ -976,11 +629,7 @@ async function handleCreateBasic(interaction) {
     .select("id,name")
     .single();
 
-  if (error) {
-    return interaction.editReply({
-      content: `Could not start NPC setup: ${error.message}`,
-      });
-  }
+  if (error) return interaction.editReply({ content: `Could not start NPC setup: ${error.message}` });
 
   const continueButton = new ButtonBuilder()
     .setCustomId(`${CREATE_FLOW_PREFIX}:continue:${data.id}`)
@@ -995,759 +644,12 @@ async function handleCreateBasic(interaction) {
           `Basic information saved.\n\n` +
           `**Life Stage:** ${pretty(lifeStage)}\n` +
           `**Age:** ${age}\n\n` +
-          "The next build step will continue this draft through Personality, " +
-          "Home/Neighborhood, School, Job, Family, AI, and Autonomy pop-outs."
+          "The next build step will continue this draft through Personality, Home/Neighborhood, School, Job, Family, AI, and Autonomy pop-outs."
         ),
     ],
     components: [new ActionRowBuilder().addComponents(continueButton)],
   });
 }
-
-async function openCreatePersonality(interaction, npcId) {
-  const { data, error } = await supabase
-    .from("npc_profiles")
-    .select("id,name,created_by_discord_user_id")
-    .eq("id", npcId)
-    .eq("guild_id", interaction.guildId)
-    .maybeSingle();
-
-  if (error || !data) {
-    return interaction.reply({
-      content: error
-        ? `Could not load this NPC draft: ${error.message}`
-        : "That NPC draft could not be found.",
-      flags: MessageFlags.Ephemeral,
-    });
-  }
-
-  if (data.created_by_discord_user_id && data.created_by_discord_user_id !== interaction.user.id) {
-    return interaction.reply({
-      content: "Only the person who started this NPC draft can continue its setup.",
-      flags: MessageFlags.Ephemeral,
-    });
-  }
-
-  const modal = new ModalBuilder()
-    .setCustomId(`${CREATE_FLOW_PREFIX}:personality:${npcId}`)
-    .setTitle(`Personality • ${data.name}`.slice(0, 45));
-
-  const traits = new TextInputBuilder()
-    .setCustomId("traits")
-    .setLabel("Main personality traits")
-    .setPlaceholder("Kind, shy, adventurous, stubborn...")
-    .setStyle(TextInputStyle.Short)
-    .setRequired(true)
-    .setMaxLength(200);
-
-  const socialStyle = new TextInputBuilder()
-    .setCustomId("social_style")
-    .setLabel("Social style")
-    .setPlaceholder("Quiet, outgoing, friendly, reserved...")
-    .setStyle(TextInputStyle.Short)
-    .setRequired(false)
-    .setMaxLength(150);
-
-  const energy = new TextInputBuilder()
-    .setCustomId("energy")
-    .setLabel("Energy / activity style")
-    .setPlaceholder("Low-key, active, spontaneous, homebody...")
-    .setStyle(TextInputStyle.Short)
-    .setRequired(false)
-    .setMaxLength(150);
-
-  const conflictStyle = new TextInputBuilder()
-    .setCustomId("conflict_style")
-    .setLabel("How do they handle conflict?")
-    .setPlaceholder("Avoids it, talks it out, gets defensive...")
-    .setStyle(TextInputStyle.Short)
-    .setRequired(false)
-    .setMaxLength(150);
-
-  const speechStyle = new TextInputBuilder()
-    .setCustomId("speech_style")
-    .setLabel("Speech / conversation style")
-    .setPlaceholder("Warm, formal, sarcastic, soft-spoken...")
-    .setStyle(TextInputStyle.Short)
-    .setRequired(false)
-    .setMaxLength(150);
-
-  modal.addComponents(
-    new ActionRowBuilder().addComponents(traits),
-    new ActionRowBuilder().addComponents(socialStyle),
-    new ActionRowBuilder().addComponents(energy),
-    new ActionRowBuilder().addComponents(conflictStyle),
-    new ActionRowBuilder().addComponents(speechStyle)
-  );
-
-  return interaction.showModal(modal);
-}
-
-async function saveCreatePersonality(interaction, npcId) {
-  await interaction.deferReply({ flags: MessageFlags.Ephemeral });
-
-  const { data: existing, error: loadError } = await supabase
-    .from("npc_profiles")
-    .select("id,name,profile_data,created_by_discord_user_id")
-    .eq("id", npcId)
-    .eq("guild_id", interaction.guildId)
-    .maybeSingle();
-
-  if (loadError || !existing) {
-    return interaction.editReply(
-      loadError
-        ? `Could not load this NPC draft: ${loadError.message}`
-        : "That NPC draft could not be found."
-    );
-  }
-
-  if (existing.created_by_discord_user_id && existing.created_by_discord_user_id !== interaction.user.id) {
-    return interaction.editReply("Only the person who started this NPC draft can continue its setup.");
-  }
-
-  const personality = {
-    traits: interaction.fields.getTextInputValue("traits").trim(),
-    social_style: interaction.fields.getTextInputValue("social_style").trim() || null,
-    energy_style: interaction.fields.getTextInputValue("energy").trim() || null,
-    conflict_style: interaction.fields.getTextInputValue("conflict_style").trim() || null,
-    speech_style: interaction.fields.getTextInputValue("speech_style").trim() || null,
-  };
-
-  const profileData = {
-    ...(existing.profile_data || {}),
-    personality,
-    setup_step: "personality_complete",
-  };
-
-  const { error: updateError } = await supabase
-    .from("npc_profiles")
-    .update({ profile_data: profileData })
-    .eq("id", npcId)
-    .eq("guild_id", interaction.guildId);
-
-  if (updateError) {
-    return interaction.editReply(`Could not save Personality: ${updateError.message}`);
-  }
-
-  const next = new ButtonBuilder()
-    .setCustomId(`${CREATE_FLOW_PREFIX}:details_open:${npcId}`)
-    .setLabel("Continue to Profile Details")
-    .setStyle(ButtonStyle.Primary);
-
-  return interaction.editReply({
-    embeds: [
-      new EmbedBuilder()
-        .setTitle(`Personality Saved • ${existing.name}`)
-        .setDescription(
-          `**Traits:** ${personality.traits}` +
-          `${personality.social_style ? `\n**Social:** ${personality.social_style}` : ""}` +
-          `${personality.energy_style ? `\n**Energy:** ${personality.energy_style}` : ""}` +
-          `${personality.conflict_style ? `\n**Conflict:** ${personality.conflict_style}` : ""}` +
-          `${personality.speech_style ? `\n**Speech:** ${personality.speech_style}` : ""}` +
-          "\n\nPersonality saved. Continue through the rest of the NPC setup."
-        ),
-    ],
-    components: [new ActionRowBuilder().addComponents(next)],
-  });
-}
-
-
-async function loadCreateDraft(interaction, npcId) {
-  const { data, error } = await supabase
-    .from("npc_profiles")
-    .select("id,name,profile_data,created_by_discord_user_id,display_age,life_stage,short_description,pronouns,avatar_url,importance,activity_level,status")
-    .eq("id", npcId)
-    .eq("guild_id", interaction.guildId)
-    .maybeSingle();
-  if (error) throw new Error(error.message);
-  if (!data) throw new Error("That NPC draft could not be found.");
-  if (data.created_by_discord_user_id && data.created_by_discord_user_id !== interaction.user.id) {
-    throw new Error("Only the person who started this NPC draft can continue its setup.");
-  }
-  return data;
-}
-
-async function patchDraftSection(interaction, npcId, key, value, extra = {}) {
-  const draft = await loadCreateDraft(interaction, npcId);
-  const profileData = { ...(draft.profile_data || {}), [key]: value, setup_step: `${key}_complete` };
-  const { error } = await supabase.from("npc_profiles").update({ profile_data: profileData, ...extra })
-    .eq("id", npcId).eq("guild_id", interaction.guildId);
-  if (error) throw new Error(error.message);
-  return draft;
-}
-
-function field(modal, id, label, placeholder = "", required = false, paragraph = false, max = 500) {
-  const input = new TextInputBuilder().setCustomId(id).setLabel(label).setStyle(paragraph ? TextInputStyle.Paragraph : TextInputStyle.Short)
-    .setRequired(required).setMaxLength(max);
-  if (placeholder) input.setPlaceholder(placeholder);
-  modal.addComponents(new ActionRowBuilder().addComponents(input));
-}
-
-function continueButton(id, label) {
-  return new ActionRowBuilder().addComponents(
-    new ButtonBuilder().setCustomId(id).setLabel(label).setStyle(ButtonStyle.Primary)
-  );
-}
-
-async function openCreateDetails(interaction, npcId) {
-  try {
-    const d = await loadCreateDraft(interaction, npcId);
-    const modal = new ModalBuilder().setCustomId(`${CREATE_FLOW_PREFIX}:details:${npcId}`).setTitle(`Profile Details • ${d.name}`.slice(0,45));
-    field(modal,"gender","Gender (optional)","Man, woman, nonbinary, etc.",false,false,80);
-    field(modal,"importance","Importance","background, supporting, or main",true,false,20);
-    field(modal,"activity","Activity Level","auto, low, medium, or high",true,false,20);
-    field(modal,"avatar","Avatar URL (optional)","https://...",false,false,400);
-    field(modal,"notes","Extra profile notes (optional)","Anything important not covered yet",false,true,600);
-    return interaction.showModal(modal);
-  } catch(e) { return interaction.reply({content:e.message,flags:MessageFlags.Ephemeral}); }
-}
-
-async function saveCreateDetails(interaction,npcId){
-  await interaction.deferReply({flags:MessageFlags.Ephemeral});
-  try{
-    const importance=(interaction.fields.getTextInputValue("importance").trim().toLowerCase()||"supporting");
-    const activity=(interaction.fields.getTextInputValue("activity").trim().toLowerCase()||"auto");
-    if(!["background","supporting","main"].includes(importance)) return interaction.editReply("Importance must be background, supporting, or main.");
-    if(!["auto","low","medium","high"].includes(activity)) return interaction.editReply("Activity level must be auto, low, medium, or high.");
-    const value={gender:interaction.fields.getTextInputValue("gender").trim()||null,importance,activity_level:activity,avatar_url:interaction.fields.getTextInputValue("avatar").trim()||null,notes:interaction.fields.getTextInputValue("notes").trim()||null};
-    const d=await patchDraftSection(interaction,npcId,"profile_details",value,{importance,activity_level:activity,avatar_url:value.avatar_url});
-    return interaction.editReply({content:`✅ Profile details saved for **${d.name}**.`,components:[continueButton(`${CREATE_FLOW_PREFIX}:likes_open:${npcId}`,"Continue to Likes & Habits")]});
-  }catch(e){return interaction.editReply(`Could not save Profile Details: ${e.message}`)}
-}
-
-async function openCreateLikes(interaction,npcId){
-  try{const d=await loadCreateDraft(interaction,npcId);const m=new ModalBuilder().setCustomId(`${CREATE_FLOW_PREFIX}:likes:${npcId}`).setTitle(`Likes & Habits • ${d.name}`.slice(0,45));
-    field(m,"likes","Likes","Foods, places, activities, people...",false,true,500);field(m,"dislikes","Dislikes","Things they avoid or dislike",false,true,500);field(m,"hobbies","Hobbies / Interests","Gardening, sports, reading...",false,true,500);field(m,"quirks","Quirks / Habits","Little routines or mannerisms",false,true,500);field(m,"pet_peeves","Pet Peeves","Things that annoy them",false,true,500);return interaction.showModal(m);}catch(e){return interaction.reply({content:e.message,flags:MessageFlags.Ephemeral});}}
-async function saveCreateLikes(interaction,npcId){await interaction.deferReply({flags:MessageFlags.Ephemeral});try{const v={likes:interaction.fields.getTextInputValue("likes").trim()||null,dislikes:interaction.fields.getTextInputValue("dislikes").trim()||null,hobbies:interaction.fields.getTextInputValue("hobbies").trim()||null,quirks:interaction.fields.getTextInputValue("quirks").trim()||null,pet_peeves:interaction.fields.getTextInputValue("pet_peeves").trim()||null};const d=await patchDraftSection(interaction,npcId,"likes_habits",v);return interaction.editReply({content:`✅ Likes & habits saved for **${d.name}**.`,components:[continueButton(`${CREATE_FLOW_PREFIX}:home_open:${npcId}`,"Continue to Home & Neighborhood")]});}catch(e){return interaction.editReply(`Could not save Likes & Habits: ${e.message}`)}}
-
-function homeSelectComponents(npcId) {
-  const homeMenu = new ChannelSelectMenuBuilder()
-    .setCustomId(`${CREATE_FLOW_PREFIX}:home_channel:${npcId}`)
-    .setPlaceholder("Choose the NPC's home channel")
-    .setMinValues(1)
-    .setMaxValues(1)
-    .setChannelTypes(
-      ChannelType.GuildText,
-      ChannelType.GuildAnnouncement,
-      ChannelType.GuildForum
-    );
-
-  const neighborhoodMenu = new ChannelSelectMenuBuilder()
-    .setCustomId(`${CREATE_FLOW_PREFIX}:home_category:${npcId}`)
-    .setPlaceholder("Choose the neighborhood / category")
-    .setMinValues(1)
-    .setMaxValues(1)
-    .setChannelTypes(ChannelType.GuildCategory);
-
-  return [
-    new ActionRowBuilder().addComponents(homeMenu),
-    new ActionRowBuilder().addComponents(neighborhoodMenu),
-    continueButton(`${CREATE_FLOW_PREFIX}:home_details_open:${npcId}`, "Continue Home Details"),
-  ];
-}
-
-function homeSelectionText(draft) {
-  const home = draft.profile_data?.home || {};
-  const homeText = home.home_channel_id ? `<#${home.home_channel_id}>` : "Not selected";
-  const neighborhoodText = home.neighborhood_category_id
-    ? `<#${home.neighborhood_category_id}>`
-    : "Not selected";
-  return (
-    `🏠 **Home & Neighborhood • ${draft.name}**\n\n` +
-    `**Home channel:** ${homeText}\n` +
-    `**Neighborhood / category:** ${neighborhoodText}\n\n` +
-    "Use the dropdowns below so LifeLine stores the actual Discord channel/category instead of a typed name."
-  );
-}
-
-async function openCreateHome(interaction, npcId) {
-  try {
-    const d = await loadCreateDraft(interaction, npcId);
-    return interaction.reply({
-      content: homeSelectionText(d),
-      components: homeSelectComponents(npcId),
-      flags: MessageFlags.Ephemeral,
-    });
-  } catch (e) {
-    return interaction.reply({ content: e.message, flags: MessageFlags.Ephemeral });
-  }
-}
-
-async function saveCreateHomeChannel(interaction, npcId) {
-  await interaction.deferUpdate();
-  try {
-    const channelId = interaction.values[0];
-    const channel = await interaction.guild.channels.fetch(channelId);
-    const d = await loadCreateDraft(interaction, npcId);
-    const current = d.profile_data?.home || {};
-    await patchDraftSection(interaction, npcId, "home", {
-      ...current,
-      home_channel_id: channelId,
-      home_location: channel?.name || null,
-    });
-    const updated = await loadCreateDraft(interaction, npcId);
-    return interaction.editReply({
-      content: homeSelectionText(updated),
-      components: homeSelectComponents(npcId),
-    });
-  } catch (e) {
-    return interaction.followUp({ content: `Could not save home channel: ${e.message}`, flags: MessageFlags.Ephemeral });
-  }
-}
-
-async function saveCreateHomeCategory(interaction, npcId) {
-  await interaction.deferUpdate();
-  try {
-    const categoryId = interaction.values[0];
-    const category = await interaction.guild.channels.fetch(categoryId);
-    const d = await loadCreateDraft(interaction, npcId);
-    const current = d.profile_data?.home || {};
-    await patchDraftSection(interaction, npcId, "home", {
-      ...current,
-      neighborhood_category_id: categoryId,
-      neighborhood: category?.name || null,
-    });
-    const updated = await loadCreateDraft(interaction, npcId);
-    return interaction.editReply({
-      content: homeSelectionText(updated),
-      components: homeSelectComponents(npcId),
-    });
-  } catch (e) {
-    return interaction.followUp({ content: `Could not save neighborhood/category: ${e.message}`, flags: MessageFlags.Ephemeral });
-  }
-}
-
-async function openCreateHomeDetails(interaction, npcId) {
-  try {
-    const d = await loadCreateDraft(interaction, npcId);
-    const home = d.profile_data?.home || {};
-    if (!home.home_channel_id || !home.neighborhood_category_id) {
-      return interaction.reply({
-        content: "Choose both the **home channel** and **neighborhood/category** first.",
-        flags: MessageFlags.Ephemeral,
-      });
-    }
-
-    const m = new ModalBuilder()
-      .setCustomId(`${CREATE_FLOW_PREFIX}:home_details:${npcId}`)
-      .setTitle(`Home Details • ${d.name}`.slice(0, 45));
-    field(m, "household", "Who do they live with?", "Names only; this does NOT create family links", false, true, 400);
-    field(m, "regular_places", "Regular nearby places", "Park, café, store, etc.", false, true, 400);
-    return interaction.showModal(m);
-  } catch (e) {
-    return interaction.reply({ content: e.message, flags: MessageFlags.Ephemeral });
-  }
-}
-
-async function saveCreateHomeDetails(interaction, npcId) {
-  await interaction.deferReply({ flags: MessageFlags.Ephemeral });
-  try {
-    const d = await loadCreateDraft(interaction, npcId);
-    const current = d.profile_data?.home || {};
-    const v = {
-      ...current,
-      household: interaction.fields.getTextInputValue("household").trim() || null,
-      regular_places: interaction.fields.getTextInputValue("regular_places").trim() || null,
-    };
-    const saved = await patchDraftSection(interaction, npcId, "home", v);
-    return interaction.editReply({
-      content: `✅ Home information saved for **${saved.name}**.`,
-      components: [continueButton(`${CREATE_FLOW_PREFIX}:school_open:${npcId}`, "Continue to School")],
-    });
-  } catch (e) {
-    return interaction.editReply(`Could not save Home: ${e.message}`);
-  }
-}
-
-function schoolSelectComponents(npcId) {
-  const schoolMenu = new ChannelSelectMenuBuilder()
-    .setCustomId(`${CREATE_FLOW_PREFIX}:school_channel:${npcId}`)
-    .setPlaceholder("Choose the NPC's school channel")
-    .setMinValues(1)
-    .setMaxValues(1)
-    .setChannelTypes(
-      ChannelType.GuildText,
-      ChannelType.GuildAnnouncement,
-      ChannelType.GuildForum
-    );
-
-  const skip = new ButtonBuilder()
-    .setCustomId(`${CREATE_FLOW_PREFIX}:school_skip:${npcId}`)
-    .setLabel("Not in School")
-    .setStyle(ButtonStyle.Secondary);
-
-  const details = new ButtonBuilder()
-    .setCustomId(`${CREATE_FLOW_PREFIX}:school_details_open:${npcId}`)
-    .setLabel("Continue School Details")
-    .setStyle(ButtonStyle.Primary);
-
-  return [
-    new ActionRowBuilder().addComponents(schoolMenu),
-    new ActionRowBuilder().addComponents(skip, details),
-  ];
-}
-
-function schoolSelectionText(draft) {
-  const school = draft.profile_data?.school || {};
-  const schoolText = school.school_channel_id
-    ? `<#${school.school_channel_id}>`
-    : school.not_in_school
-      ? "Not in school"
-      : "Not selected";
-  return (
-    `🎓 **School • ${draft.name}**\n\n` +
-    `**School channel:** ${schoolText}\n\n` +
-    "Choose the actual Discord channel for their school. LifeLine will store the channel ID so renaming the channel later will not break the NPC's school connection."
-  );
-}
-
-async function openCreateSchool(interaction, npcId) {
-  try {
-    const d = await loadCreateDraft(interaction, npcId);
-    return interaction.reply({
-      content: schoolSelectionText(d),
-      components: schoolSelectComponents(npcId),
-      flags: MessageFlags.Ephemeral,
-    });
-  } catch (e) {
-    return interaction.reply({ content: e.message, flags: MessageFlags.Ephemeral });
-  }
-}
-
-async function saveCreateSchoolChannel(interaction, npcId) {
-  await interaction.deferUpdate();
-  try {
-    const channelId = interaction.values[0];
-    const d = await loadCreateDraft(interaction, npcId);
-    const current = d.profile_data?.school || {};
-    const saved = await patchDraftSection(interaction, npcId, "school", {
-      ...current,
-      school_channel_id: channelId,
-      school: `<#${channelId}>`,
-      not_in_school: false,
-    });
-    return interaction.editReply({
-      content: schoolSelectionText(saved),
-      components: schoolSelectComponents(npcId),
-    });
-  } catch (e) {
-    return interaction.editReply({ content: `Could not save school channel: ${e.message}`, components: [] });
-  }
-}
-
-async function skipCreateSchool(interaction, npcId) {
-  await interaction.deferUpdate();
-  try {
-    const d = await loadCreateDraft(interaction, npcId);
-    const current = d.profile_data?.school || {};
-    const saved = await patchDraftSection(interaction, npcId, "school", {
-      ...current,
-      school_channel_id: null,
-      school: null,
-      subtype: null,
-      grade_year: null,
-      schedule: null,
-      activities: null,
-      not_in_school: true,
-    });
-    return interaction.editReply({
-      content: `✅ **${saved.name}** is marked as **not currently in school**.`,
-      components: [continueButton(`${CREATE_FLOW_PREFIX}:job_open:${npcId}`, "Continue to Job")],
-    });
-  } catch (e) {
-    return interaction.editReply({ content: `Could not skip School: ${e.message}`, components: [] });
-  }
-}
-
-async function openCreateSchoolDetails(interaction, npcId) {
-  try {
-    const d = await loadCreateDraft(interaction, npcId);
-    const school = d.profile_data?.school || {};
-    if (!school.school_channel_id) {
-      return interaction.reply({
-        content: "Choose a school channel first, or press **Not in School**.",
-        flags: MessageFlags.Ephemeral,
-      });
-    }
-    const m = new ModalBuilder()
-      .setCustomId(`${CREATE_FLOW_PREFIX}:school:${npcId}`)
-      .setTitle(`School Details • ${d.name}`.slice(0, 45));
-    field(m, "school_type", "School level", "preschool, daycare, elementary, middle_school, high_school, university, trade_school", false, false, 100);
-    field(m, "grade", "Grade / Year", "5th grade, senior, year 2...", false, false, 80);
-    field(m, "schedule", "School schedule", "Mon-Fri 8:00 AM-3:00 PM", false, false, 150);
-    field(m, "activities", "Clubs / Activities", "Sports, clubs, tutoring...", false, true, 400);
-    return interaction.showModal(m);
-  } catch (e) {
-    return interaction.reply({ content: e.message, flags: MessageFlags.Ephemeral });
-  }
-}
-
-async function saveCreateSchool(interaction, npcId) {
-  await interaction.deferReply({ flags: MessageFlags.Ephemeral });
-  try {
-    const d = await loadCreateDraft(interaction, npcId);
-    const current = d.profile_data?.school || {};
-    const v = {
-      ...current,
-      subtype: interaction.fields.getTextInputValue("school_type").trim().toLowerCase() || null,
-      grade_year: interaction.fields.getTextInputValue("grade").trim() || null,
-      schedule: interaction.fields.getTextInputValue("schedule").trim() || null,
-      activities: interaction.fields.getTextInputValue("activities").trim() || null,
-      not_in_school: false,
-    };
-    const saved = await patchDraftSection(interaction, npcId, "school", v);
-    return interaction.editReply({
-      content: `✅ School information saved for **${saved.name}**.`,
-      components: [continueButton(`${CREATE_FLOW_PREFIX}:job_open:${npcId}`, "Continue to Job")],
-    });
-  } catch (e) {
-    return interaction.editReply(`Could not save School: ${e.message}`);
-  }
-}
-
-async function openCreateJob(interaction,npcId){
-  try{
-    const d=await loadCreateDraft(interaction,npcId);
-    const menu=new StringSelectMenuBuilder()
-      .setCustomId(`${CREATE_FLOW_PREFIX}:job_status:${npcId}`)
-      .setPlaceholder("Choose employment status")
-      .addOptions(
-        {label:"Employed",value:"employed",description:"Currently has a regular job"},
-        {label:"Self-Employed",value:"self_employed",description:"Runs their own work/business"},
-        {label:"Part-Time",value:"part_time",description:"Works a part-time job"},
-        {label:"Unemployed",value:"unemployed",description:"Not currently working"},
-        {label:"Student",value:"student",description:"School is their primary role"},
-        {label:"Retired",value:"retired",description:"Retired from their former career"},
-        {label:"Not Working",value:"not_working",description:"Does not currently participate in employment"},
-        {label:"Other",value:"other",description:"Use the notes for a custom situation"}
-      );
-    return interaction.reply({
-      content:`💼 **Job • ${d.name}**\nChoose their current employment status first.\n\n**Retired** NPCs will not actively seek or be randomly assigned a job by default, but they can still volunteer, consult, take part-time work, or return to work later if their story allows it.`,
-      components:[new ActionRowBuilder().addComponents(menu)],
-      flags:MessageFlags.Ephemeral
-    });
-  }catch(e){return interaction.reply({content:e.message,flags:MessageFlags.Ephemeral});}
-}
-
-function jobChannelComponents(npcId, retired = false) {
-  const workplaceMenu = new ChannelSelectMenuBuilder()
-    .setCustomId(`${CREATE_FLOW_PREFIX}:job_channel:${npcId}`)
-    .setPlaceholder(retired ? "Choose former workplace channel" : "Choose workplace / job channel")
-    .setMinValues(1)
-    .setMaxValues(1)
-    .setChannelTypes(
-      ChannelType.GuildText,
-      ChannelType.GuildAnnouncement,
-      ChannelType.GuildForum
-    );
-
-  const skip = new ButtonBuilder()
-    .setCustomId(`${CREATE_FLOW_PREFIX}:job_channel_skip:${npcId}`)
-    .setLabel(retired ? "No Former Workplace" : "No Workplace")
-    .setStyle(ButtonStyle.Secondary);
-
-  const details = new ButtonBuilder()
-    .setCustomId(`${CREATE_FLOW_PREFIX}:job_details_open:${npcId}`)
-    .setLabel(retired ? "Continue Former Career Details" : "Continue Job Details")
-    .setStyle(ButtonStyle.Primary);
-
-  return [
-    new ActionRowBuilder().addComponents(workplaceMenu),
-    new ActionRowBuilder().addComponents(skip, details),
-  ];
-}
-
-function jobChannelText(draft) {
-  const job = draft.profile_data?.job || {};
-  const retired = job.status === "retired";
-  const channelText = job.workplace_channel_id ? `<#${job.workplace_channel_id}>` : "Not selected";
-  return (
-    `💼 **${retired ? "Retirement / Former Career" : "Job"} • ${draft.name}**\n\n` +
-    `**Employment status:** ${pretty(job.status || "not set")}\n` +
-    `**${retired ? "Former workplace" : "Workplace"} channel:** ${channelText}\n\n` +
-    "Choose the actual Discord channel so LifeLine stores the channel ID instead of relying on a typed workplace name."
-  );
-}
-
-async function saveCreateJobStatus(interaction,npcId){
-  await interaction.deferUpdate();
-  try{
-    const status=interaction.values[0];
-    const d=await loadCreateDraft(interaction,npcId);
-    const current=d.profile_data?.job||{};
-    const saved=await patchDraftSection(interaction,npcId,"job",{...current,status});
-    const retired=status==="retired";
-    return interaction.editReply({
-      content:jobChannelText(saved),
-      components:jobChannelComponents(npcId,retired)
-    });
-  }catch(e){return interaction.editReply({content:`Could not save employment status: ${e.message}`,components:[]});}
-}
-
-async function saveCreateJobChannel(interaction, npcId) {
-  await interaction.deferUpdate();
-  try {
-    const channelId = interaction.values[0];
-    const d = await loadCreateDraft(interaction, npcId);
-    const current = d.profile_data?.job || {};
-    const saved = await patchDraftSection(interaction, npcId, "job", {
-      ...current,
-      workplace_channel_id: channelId,
-      workplace: `<#${channelId}>`,
-    });
-    return interaction.editReply({
-      content: jobChannelText(saved),
-      components: jobChannelComponents(npcId, current.status === "retired"),
-    });
-  } catch (e) {
-    return interaction.editReply({ content: `Could not save workplace channel: ${e.message}`, components: [] });
-  }
-}
-
-async function skipCreateJobChannel(interaction, npcId) {
-  await interaction.deferUpdate();
-  try {
-    const d = await loadCreateDraft(interaction, npcId);
-    const current = d.profile_data?.job || {};
-    const saved = await patchDraftSection(interaction, npcId, "job", {
-      ...current,
-      workplace_channel_id: null,
-      workplace: null,
-    });
-    return interaction.editReply({
-      content: jobChannelText(saved),
-      components: [continueButton(`${CREATE_FLOW_PREFIX}:job_details_open:${npcId}`, current.status === "retired" ? "Continue Former Career Details" : "Continue Job Details")],
-    });
-  } catch (e) {
-    return interaction.editReply({ content: `Could not skip workplace: ${e.message}`, components: [] });
-  }
-}
-
-async function openCreateJobDetails(interaction,npcId){
-  try{
-    const d=await loadCreateDraft(interaction,npcId);
-    const status=d.profile_data?.job?.status||null;
-    const retired=status==="retired";
-    const m=new ModalBuilder().setCustomId(`${CREATE_FLOW_PREFIX}:job:${npcId}`).setTitle(`${retired?"Retirement":"Job"} Details • ${d.name}`.slice(0,45));
-    field(m,"job_title",retired?"Former Job / Career":"Job Title",retired?"Teacher, nurse, mechanic...":"Leave blank if they have no specific job",false,false,120);
-    field(m,"schedule",retired?"Current Retirement Routine":"Work Schedule",retired?"Optional: volunteer Tuesdays, golf Fridays...":"Mon-Fri 9 AM-5 PM",false,false,150);
-    field(m,"job_notes",retired?"Retirement / Career Notes":"Job Behavior / Notes",retired?"Past career, volunteering, consulting, willingness to work again...":"What they do at work",false,true,500);
-    return interaction.showModal(m);
-  }catch(e){return interaction.reply({content:e.message,flags:MessageFlags.Ephemeral});}
-}
-
-async function saveCreateJob(interaction,npcId){
-  await interaction.deferReply({flags:MessageFlags.Ephemeral});
-  try{
-    const d=await loadCreateDraft(interaction,npcId);
-    const current=d.profile_data?.job||{};
-    const v={
-      ...current,
-      title:interaction.fields.getTextInputValue("job_title").trim()||null,
-      schedule:interaction.fields.getTextInputValue("schedule").trim()||null,
-      notes:interaction.fields.getTextInputValue("job_notes").trim()||null,
-      retired:current.status==="retired",
-      seek_work_by_default:current.status==="retired"?false:null
-    };
-    const saved=await patchDraftSection(interaction,npcId,"job",v);
-    return interaction.editReply({content:`✅ Job information saved for **${saved.name}**.`,components:[continueButton(`${CREATE_FLOW_PREFIX}:family_open:${npcId}`,"Continue to Family")]});
-  }catch(e){return interaction.editReply(`Could not save Job: ${e.message}`)}
-}
-
-async function openCreateFamily(interaction,npcId){try{const d=await loadCreateDraft(interaction,npcId);const m=new ModalBuilder().setCustomId(`${CREATE_FLOW_PREFIX}:family:${npcId}`).setTitle(`Family • ${d.name}`.slice(0,45));field(m,"parents","Parents / Guardians","Names and relationship labels",false,true,400);field(m,"children","Children","Names and relationship labels",false,true,400);field(m,"siblings","Siblings","Names",false,true,400);field(m,"partner_family","Spouse / Partner / Other Family","Spouse, grandparents, cousins, etc.",false,true,600);return interaction.showModal(m);}catch(e){return interaction.reply({content:e.message,flags:MessageFlags.Ephemeral});}}
-async function saveCreateFamily(interaction,npcId){await interaction.deferReply({flags:MessageFlags.Ephemeral});try{const v={parents_guardians:interaction.fields.getTextInputValue("parents").trim()||null,children:interaction.fields.getTextInputValue("children").trim()||null,siblings:interaction.fields.getTextInputValue("siblings").trim()||null,other_family:interaction.fields.getTextInputValue("partner_family").trim()||null};const d=await patchDraftSection(interaction,npcId,"family",v);return interaction.editReply({content:`✅ Family information saved for **${d.name}**.`,components:[continueButton(`${CREATE_FLOW_PREFIX}:relationships_open:${npcId}`,"Continue to Relationships")]});}catch(e){return interaction.editReply(`Could not save Family: ${e.message}`)}}
-
-async function openCreateRelationships(interaction,npcId){try{const d=await loadCreateDraft(interaction,npcId);const m=new ModalBuilder().setCustomId(`${CREATE_FLOW_PREFIX}:relationships:${npcId}`).setTitle(`Relationships • ${d.name}`.slice(0,45));field(m,"friends","Friends / Best Friends","Names + friend, close friend, best friend...",false,true,500);field(m,"romance","Romantic Relationships","Crush, dating, partner, spouse, ex...",false,true,500);field(m,"conflicts","Rivals / Enemies / Estranged","Names + relationship",false,true,500);field(m,"other","Other Important Connections","Neighbors, mentors, coworkers...",false,true,500);return interaction.showModal(m);}catch(e){return interaction.reply({content:e.message,flags:MessageFlags.Ephemeral});}}
-async function saveCreateRelationships(interaction,npcId){await interaction.deferReply({flags:MessageFlags.Ephemeral});try{const v={friends:interaction.fields.getTextInputValue("friends").trim()||null,romance:interaction.fields.getTextInputValue("romance").trim()||null,conflicts:interaction.fields.getTextInputValue("conflicts").trim()||null,other:interaction.fields.getTextInputValue("other").trim()||null};const d=await patchDraftSection(interaction,npcId,"existing_relationships",v);return interaction.editReply({content:`✅ Relationships saved for **${d.name}**.`,components:[continueButton(`${CREATE_FLOW_PREFIX}:life_open:${npcId}`,"Continue to Life & Family Preferences")]});}catch(e){return interaction.editReply(`Could not save Relationships: ${e.message}`)}}
-
-async function openCreateLifePrefs(interaction,npcId){try{const d=await loadCreateDraft(interaction,npcId);const m=new ModalBuilder().setCustomId(`${CREATE_FLOW_PREFIX}:life:${npcId}`).setTitle(`Life Preferences • ${d.name}`.slice(0,45));field(m,"marriage","Marriage Preference","wants, maybe, does_not_want, already_married",false,false,80);field(m,"children","Children Preference","wants, maybe, does_not_want, done_having",false,false,80);field(m,"family_level","Family-Oriented Level","low, medium, high",false,false,30);field(m,"priorities","Life Priorities","Family, career, travel, community...",false,true,400);field(m,"family_paths","Family Paths / Notes","Adoption, surrogacy, foster, etc.",false,true,400);return interaction.showModal(m);}catch(e){return interaction.reply({content:e.message,flags:MessageFlags.Ephemeral});}}
-async function saveCreateLifePrefs(interaction,npcId){await interaction.deferReply({flags:MessageFlags.Ephemeral});try{const v={marriage:interaction.fields.getTextInputValue("marriage").trim().toLowerCase()||null,children:interaction.fields.getTextInputValue("children").trim().toLowerCase()||null,family_oriented:interaction.fields.getTextInputValue("family_level").trim().toLowerCase()||null,priorities:interaction.fields.getTextInputValue("priorities").trim()||null,family_paths:interaction.fields.getTextInputValue("family_paths").trim()||null};const d=await patchDraftSection(interaction,npcId,"life_family_preferences",v);return interaction.editReply({content:`✅ Life preferences saved for **${d.name}**.`,components:[continueButton(`${CREATE_FLOW_PREFIX}:ai_open:${npcId}`,"Continue to AI Personality")]});}catch(e){return interaction.editReply(`Could not save Life Preferences: ${e.message}`)}}
-
-async function openCreateAI(interaction,npcId){try{const d=await loadCreateDraft(interaction,npcId);const m=new ModalBuilder().setCustomId(`${CREATE_FLOW_PREFIX}:ai:${npcId}`).setTitle(`AI Personality • ${d.name}`.slice(0,45));field(m,"initiative","Conversation Initiative","low, medium, high",false,false,30);field(m,"expressiveness","Expressiveness","reserved, balanced, expressive",false,false,50);field(m,"humor","Humor Style","dry, silly, sarcastic, gentle...",false,false,100);field(m,"privacy","Privacy / Nosiness","private, balanced, curious, nosy",false,false,80);field(m,"ai_notes","AI Behavior Notes","Anything the AI should consistently remember about how they act",false,true,700);return interaction.showModal(m);}catch(e){return interaction.reply({content:e.message,flags:MessageFlags.Ephemeral});}}
-async function saveCreateAI(interaction,npcId){await interaction.deferReply({flags:MessageFlags.Ephemeral});try{const v={initiative:interaction.fields.getTextInputValue("initiative").trim().toLowerCase()||null,expressiveness:interaction.fields.getTextInputValue("expressiveness").trim().toLowerCase()||null,humor:interaction.fields.getTextInputValue("humor").trim()||null,privacy:interaction.fields.getTextInputValue("privacy").trim().toLowerCase()||null,notes:interaction.fields.getTextInputValue("ai_notes").trim()||null};const d=await patchDraftSection(interaction,npcId,"ai_personality",v);return interaction.editReply({content:`✅ AI personality saved for **${d.name}**.`,components:[continueButton(`${CREATE_FLOW_PREFIX}:autonomy_open:${npcId}`,"Continue to Autonomy")]});}catch(e){return interaction.editReply(`Could not save AI Personality: ${e.message}`)}}
-
-async function openCreateAutonomy(interaction,npcId){
-  try{
-    const d=await loadCreateDraft(interaction,npcId);
-    const menu=new StringSelectMenuBuilder()
-      .setCustomId(`${CREATE_FLOW_PREFIX}:natural_development:${npcId}`)
-      .setPlaceholder("Can blank traits develop naturally?")
-      .addOptions(
-        {label:"Yes — Natural Development",value:"enabled",description:"Blank preferences can emerge from experiences and memories"},
-        {label:"No — Admin Defined Only",value:"disabled",description:"Leave unspecified traits blank until an admin edits them"}
-      );
-    return interaction.reply({
-      content:`🌱 **Natural Development • ${d.name}**
-Choose whether LifeLine may develop unspecified preferences over time.
-
-When ON, blank things like **likes, dislikes, hobbies, quirks, routines, favorite places and social preferences** can emerge naturally from what the NPC actually experiences. Admin-set facts remain protected.`,
-      components:[new ActionRowBuilder().addComponents(menu)],
-      flags:MessageFlags.Ephemeral
-    });
-  }catch(e){return interaction.reply({content:e.message,flags:MessageFlags.Ephemeral});}
-}
-
-async function saveNaturalDevelopment(interaction,npcId){
-  await interaction.deferUpdate();
-  try{
-    const enabled=interaction.values[0]==="enabled";
-    const d=await loadCreateDraft(interaction,npcId);
-    const current=d.profile_data?.autonomy||{};
-    await patchDraftSection(interaction,npcId,"autonomy",{
-      ...current,
-      natural_development:enabled,
-      natural_development_scope:enabled?["likes","dislikes","hobbies","quirks","routines","favorite_places","social_preferences"]:[]
-    });
-    return interaction.editReply({
-      content:enabled
-        ? "✅ **Natural Development ON.** Blank optional preferences may grow from memories and experiences."
-        : "✅ **Natural Development OFF.** Blank preferences will remain unset until an admin changes them.",
-      components:[continueButton(`${CREATE_FLOW_PREFIX}:autonomy_details_open:${npcId}`,"Continue Autonomy Settings")]
-    });
-  }catch(e){return interaction.editReply({content:`Could not save Natural Development: ${e.message}`,components:[]});}
-}
-
-async function openCreateAutonomyDetails(interaction,npcId){
-  try{
-    const d=await loadCreateDraft(interaction,npcId);
-    const m=new ModalBuilder().setCustomId(`${CREATE_FLOW_PREFIX}:autonomy:${npcId}`).setTitle(`Autonomy • ${d.name}`.slice(0,45));
-    field(m,"relationships","Form Relationships Automatically?","yes or no",true,false,10);
-    field(m,"romance","Date / Romance Automatically?","yes or no",true,false,10);
-    field(m,"marriage_kids","Marriage & Children Allowed?","yes, no, or custom note",true,false,100);
-    field(m,"moves","Job / Home Changes Allowed?","yes or no",true,false,10);
-    field(m,"limits","Autonomy Limits / Locks","Anything LifeLine must never change",false,true,500);
-    return interaction.showModal(m);
-  }catch(e){return interaction.reply({content:e.message,flags:MessageFlags.Ephemeral});}
-}
-
-async function saveCreateAutonomy(interaction,npcId){
-  await interaction.deferReply({flags:MessageFlags.Ephemeral});
-  try{
-    const d=await loadCreateDraft(interaction,npcId);
-    const current=d.profile_data?.autonomy||{};
-    const yn=(x)=>interaction.fields.getTextInputValue(x).trim().toLowerCase();
-    const v={
-      ...current,
-      relationships:yn("relationships"),
-      romance:yn("romance"),
-      marriage_children:interaction.fields.getTextInputValue("marriage_kids").trim().toLowerCase(),
-      job_home_changes:yn("moves"),
-      limits:interaction.fields.getTextInputValue("limits").trim()||null
-    };
-    const saved=await patchDraftSection(interaction,npcId,"autonomy",v);
-    return interaction.editReply({content:`✅ Autonomy settings saved for **${saved.name}**.`,components:[continueButton(`${CREATE_FLOW_PREFIX}:transport_open:${npcId}`,"Continue to Transportation")]});
-  }catch(e){return interaction.editReply(`Could not save Autonomy: ${e.message}`)}
-}
-
-async function openCreateTransport(interaction,npcId){try{const d=await loadCreateDraft(interaction,npcId);const menu=new StringSelectMenuBuilder().setCustomId(`${CREATE_FLOW_PREFIX}:transport:${npcId}`).setPlaceholder("Choose primary transportation").addOptions(
- {label:"Own Car",value:"own_car"},{label:"Walks",value:"walks"},{label:"Public Transit",value:"public_transit"},{label:"Bicycle",value:"bicycle"},{label:"Rideshare",value:"rideshare"},{label:"Gets Rides",value:"gets_rides"},{label:"Parent/Guardian Transportation",value:"parent_guardian"},{label:"Mixed",value:"mixed"});return interaction.reply({content:`Transportation • **${d.name}**`,components:[new ActionRowBuilder().addComponents(menu)],flags:MessageFlags.Ephemeral});}catch(e){return interaction.reply({content:e.message,flags:MessageFlags.Ephemeral});}}
-
-async function saveCreateTransport(interaction,npcId){await interaction.deferUpdate();try{const value=interaction.values[0];const d=await patchDraftSection(interaction,npcId,"transportation",{primary:value,vehicle_type:null});if(["own_car","mixed"].includes(value)){const menu=new StringSelectMenuBuilder().setCustomId(`${CREATE_FLOW_PREFIX}:vehicle:${npcId}`).setPlaceholder("Choose vehicle type").addOptions({label:"Car",value:"car"},{label:"Sedan",value:"sedan"},{label:"SUV",value:"suv"},{label:"Truck",value:"truck"},{label:"Van",value:"van"},{label:"Coupe",value:"coupe"},{label:"Convertible",value:"convertible"},{label:"Other",value:"other"});return interaction.editReply({content:`✅ Primary transportation: **${pretty(value)}**\nChoose the vehicle type.`,components:[new ActionRowBuilder().addComponents(menu)]});}return interaction.editReply({content:`✅ Transportation saved for **${d.name}**.`,components:[continueButton(`${CREATE_FLOW_PREFIX}:review:${npcId}`,"Review & Create NPC")]});}catch(e){return interaction.editReply({content:`Could not save Transportation: ${e.message}`,components:[]})}}
-
-async function saveCreateVehicle(interaction,npcId){await interaction.deferUpdate();try{const d=await loadCreateDraft(interaction,npcId);const current=d.profile_data?.transportation||{};const vehicle=interaction.values[0];await patchDraftSection(interaction,npcId,"transportation",{...current,vehicle_type:vehicle});return interaction.editReply({content:`✅ Vehicle type: **${pretty(vehicle)}**`,components:[continueButton(`${CREATE_FLOW_PREFIX}:review:${npcId}`,"Review & Create NPC")]});}catch(e){return interaction.editReply({content:`Could not save Vehicle: ${e.message}`,components:[]})}}
-
-async function showCreateReview(interaction,npcId){await interaction.deferReply({flags:MessageFlags.Ephemeral});try{const d=await loadCreateDraft(interaction,npcId);const p=d.profile_data||{};const done=["personality","profile_details","likes_habits","home","school","job","family","existing_relationships","life_family_preferences","ai_personality","autonomy","transportation"].filter(k=>p[k]).length;const embed=new EmbedBuilder().setTitle(`Review NPC • ${d.name}`).setDescription(`**Age:** ${d.display_age} • ${pretty(d.life_stage)}\n**Importance:** ${pretty(d.importance||"supporting")}\n**Activity:** ${pretty(d.activity_level||"auto")}\n\nSetup sections completed: **${done}/12**\n\nPress **Create NPC** to finish this draft and allow LifeLine to use it.`).addFields({name:"Personality",value:p.personality?.traits||"Not set",inline:false},{name:"Home",value:p.home?.home_location||"Not set",inline:true},{name:"School",value:p.school?.school||"None",inline:true},{name:"Job",value:p.job?.status==="retired"?`Retired${p.job?.title?` • Former ${p.job.title}`:""}`:(p.job?.title||p.job?.status||"None"),inline:true},{name:"Natural Development",value:p.autonomy?.natural_development===false?"Off":"On",inline:true},{name:"Transportation",value:pretty(p.transportation?.primary||"not set"),inline:true});const finish=new ButtonBuilder().setCustomId(`${CREATE_FLOW_PREFIX}:finish:${npcId}`).setLabel("Create NPC").setStyle(ButtonStyle.Success);return interaction.editReply({embeds:[embed],components:[new ActionRowBuilder().addComponents(finish)]});}catch(e){return interaction.editReply(`Could not load review: ${e.message}`)}}
-
-async function finishCreateNpc(interaction,npcId){await interaction.deferUpdate();try{const d=await loadCreateDraft(interaction,npcId);const pd={...(d.profile_data||{}),setup_incomplete:false,setup_step:"complete",setup_completed_at:new Date().toISOString()};const {error}=await supabase.from("npc_profiles").update({profile_data:pd,status:"active"}).eq("id",npcId).eq("guild_id",interaction.guildId);if(error)throw new Error(error.message);return interaction.editReply({embeds:[new EmbedBuilder().setTitle(`✅ NPC Created • ${d.name}`).setDescription("LifeLine setup is complete. This NPC is now active and ready for schedules, movement, relationships, memories, and simulation.")],components:[]});}catch(e){return interaction.editReply({content:`Could not finish NPC setup: ${e.message}`,components:[]})}}
 
 async function handleEditSectionChoice(interaction) {
   const npcId = interaction.customId.split(":").pop();
@@ -1771,16 +673,14 @@ async function toggleSimulationButton(interaction) {
     .eq("guild_id", interaction.guildId);
 
   if (error) {
-    return interaction.reply({
+    return interaction.followUp({
       content: `Could not update simulator: ${error.message}`,
       flags: MessageFlags.Ephemeral,
     });
   }
 
   return interaction.editReply({
-    content: newValue
-      ? "⏸️ The NPC simulator is now OFF."
-      : "▶️ The NPC simulator is now ON.",
+    content: newValue ? "⏸️ The NPC simulator is now OFF." : "▶️ The NPC simulator is now ON.",
     embeds: [],
     components: [],
   });
@@ -1790,14 +690,9 @@ async function openChannelPicker(interaction, kind) {
   const picker = new ChannelSelectMenuBuilder()
     .setCustomId(`${SETTINGS_PREFIX}:channel:${kind}`)
     .setPlaceholder(
-      kind === "life"
-        ? "Choose the Life Updates channel"
-        : "Choose the Admin Notifications channel"
+      kind === "life" ? "Choose the Life Updates channel" : "Choose the Admin Notifications channel"
     )
-    .setChannelTypes(
-      ChannelType.GuildText,
-      ChannelType.GuildAnnouncement
-    )
+    .setChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement)
     .setMinValues(1)
     .setMaxValues(1);
 
@@ -1813,14 +708,10 @@ async function openChannelPicker(interaction, kind) {
 
 async function saveSettingsChannel(interaction) {
   await interaction.deferUpdate();
-
   const kind = interaction.customId.split(":").pop();
   const channelId = interaction.values[0];
 
-  const field =
-    kind === "life"
-      ? "life_updates_channel_id"
-      : "admin_notifications_channel_id";
+  const field = kind === "life" ? "life_updates_channel_id" : "admin_notifications_channel_id";
 
   const { error } = await supabase
     .from("npc_guild_settings")
@@ -1828,10 +719,7 @@ async function saveSettingsChannel(interaction) {
     .eq("guild_id", interaction.guildId);
 
   if (error) {
-    return interaction.editReply({
-      content: `Could not save channel: ${error.message}`,
-      components: [],
-    });
+    return interaction.editReply({ content: `Could not save channel: ${error.message}`, components: [] });
   }
 
   return interaction.editReply({
@@ -1857,13 +745,11 @@ async function openTimezoneModal(interaction) {
     .setMaxLength(80);
 
   modal.addComponents(new ActionRowBuilder().addComponents(timezone));
-
   return interaction.showModal(modal);
 }
 
 async function saveTimezone(interaction) {
   await interaction.deferReply({ flags: MessageFlags.Ephemeral });
-
   const timezone = interaction.fields.getTextInputValue("timezone").trim();
 
   const { error } = await supabase
@@ -1871,35 +757,28 @@ async function saveTimezone(interaction) {
     .update({ timezone })
     .eq("guild_id", interaction.guildId);
 
-  if (error) {
-    return interaction.editReply({
-      content: `Could not save timezone: ${error.message}`,
-      });
-  }
-
-  return interaction.editReply({
-    content: `✅ Server timezone set to **${timezone}**.`,
-  });
+  if (error) return interaction.editReply({ content: `Could not save timezone: ${error.message}` });
+  return interaction.editReply({ content: `✅ Server timezone set to **${timezone}**.` });
 }
 
 async function openWorldLocationPicker(interaction) {
   const picker = new ChannelSelectMenuBuilder()
     .setCustomId(`${WORLD_PREFIX}:edit_channel`)
-    .setPlaceholder("Choose a channel to edit")
+    .setPlaceholder("Choose a channel or category to edit")
     .setMinValues(1)
     .setMaxValues(1)
     .setChannelTypes(
+      ChannelType.GuildCategory,
       ChannelType.GuildText,
       ChannelType.GuildAnnouncement,
-      ChannelType.GuildForum
+      ChannelType.GuildForum,
+      ChannelType.GuildVoice,
+      ChannelType.GuildStageVoice
     );
 
   return interaction.reply({
-    content:
-      "Pick the **actual Discord channel** you want LifeLine to classify/edit.",
-    components: [
-      new ActionRowBuilder().addComponents(picker),
-    ],
+    content: "Pick the **actual Discord channel or category** you want LifeLine to classify/edit.",
+    components: [new ActionRowBuilder().addComponents(picker)],
     flags: MessageFlags.Ephemeral,
   });
 }
@@ -1914,164 +793,152 @@ async function editWorldLocationFromDiscordChannel(interaction) {
 
   if (!channel) {
     return interaction.editReply({
-      content: "I couldn't load that Discord channel.",
+      content: "I couldn't load that Discord channel/category.",
       components: [],
     });
   }
 
-  const result = await syncWorldChannel(interaction.guild, channel, {
-    notifyUnknown: false,
-  });
+  let { data: location, error } = await supabase
+    .from("npc_world_locations")
+    .select("id,name,location_type,discord_object_type,custom_type_name,custom_type_description,is_custom_type")
+    .eq("guild_id", interaction.guildId)
+    .eq("discord_channel_id", discordChannelId)
+    .maybeSingle();
 
-  if (!result?.location) {
+  if (error) {
     return interaction.editReply({
-      content: "That channel type is not used as a LifeLine world location.",
+      content: `Could not load that location: ${error.message}`,
       components: [],
     });
   }
 
-  return showWorldLocationTypePicker(
-    interaction,
-    result.location.id,
-    result.location
-  );
+  if (!location) {
+    const objectType =
+      channel.type === ChannelType.GuildCategory
+        ? "category"
+        : channel.isThread?.()
+        ? "thread"
+        : channel.type === ChannelType.GuildForum
+        ? "forum"
+        : "channel";
+
+    const row = {
+      guild_id: interaction.guildId,
+      discord_channel_id: channel.id,
+      parent_discord_category_id: channel.parentId || null,
+      name: channel.name,
+      channel_name: channel.name,
+      channel_topic: "topic" in channel ? channel.topic || null : null,
+      location_type: guessLocationType(channel),
+      discord_object_type: objectType,
+      auto_classified: true,
+      admin_confirmed: false,
+      is_custom_type: false,
+    };
+
+    const insert = await supabase
+      .from("npc_world_locations")
+      .upsert(row, { onConflict: "guild_id,discord_channel_id" })
+      .select("id,name,location_type,discord_object_type,custom_type_name,custom_type_description,is_custom_type")
+      .single();
+
+    if (insert.error) {
+      return interaction.editReply({
+        content: `Could not save that location: ${insert.error.message}`,
+        components: [],
+      });
+    }
+
+    location = insert.data;
+  }
+
+  return showWorldLocationTypePicker(interaction, location.id, location);
 }
 
-function buildLocationTypeRows(locationId) {
-  const common = new StringSelectMenuBuilder()
-    .setCustomId(`${WORLD_PREFIX}:edit_type:${locationId}:common`)
-    .setPlaceholder("Common location types")
-    .setMinValues(1)
-    .setMaxValues(1)
-    .addOptions(LOCATION_TYPES_COMMON);
-
-  const more = new StringSelectMenuBuilder()
-    .setCustomId(`${WORLD_PREFIX}:edit_type:${locationId}:more`)
-    .setPlaceholder("More location types")
-    .setMinValues(1)
-    .setMaxValues(1)
-    .addOptions(LOCATION_TYPES_MORE);
-
-  return [
-    new ActionRowBuilder().addComponents(common),
-    new ActionRowBuilder().addComponents(more),
-  ];
-}
-
-async function showWorldLocationTypePicker(
-  interaction,
-  locationId,
-  knownLocation = null
-) {
+async function showWorldLocationTypePicker(interaction, locationId, knownLocation = null) {
   let location = knownLocation;
 
-  if (
-    !location &&
-    (interaction.isStringSelectMenu() || interaction.isChannelSelectMenu()) &&
-    !interaction.deferred &&
-    !interaction.replied
-  ) {
+  if (!location && interaction.isStringSelectMenu() && !interaction.deferred && !interaction.replied) {
     await interaction.deferUpdate();
   }
 
   if (!location) {
     const { data, error } = await supabase
       .from("npc_world_locations")
-      .select("id,name,location_type,discord_object_type,metadata")
+      .select("id,name,location_type,discord_object_type,custom_type_name,custom_type_description,is_custom_type")
       .eq("guild_id", interaction.guildId)
       .eq("id", locationId)
       .single();
 
     if (error) {
-      const payload = {
-        content: `Could not load that location: ${error.message}`,
-        components: [],
-      };
-
-      if (interaction.deferred || interaction.replied) {
-        return interaction.editReply(payload);
+      const message = `Could not load that location: ${error.message}`;
+      if (interaction.isStringSelectMenu()) {
+        return interaction.editReply({ content: message, components: [] });
       }
-
-      return interaction.reply({
-        ...payload,
-        flags: MessageFlags.Ephemeral,
-      });
+      return interaction.reply({ content: message, flags: MessageFlags.Ephemeral });
     }
 
     location = data;
   }
 
+  const currentType =
+    location.is_custom_type && location.custom_type_name
+      ? `${location.custom_type_name} (Custom)`
+      : pretty(location.location_type);
+
+  const typePicker = new StringSelectMenuBuilder()
+    .setCustomId(`${WORLD_PREFIX}:edit_type:${location.id}`)
+    .setPlaceholder(`Current: ${currentType}`.slice(0, 150))
+    .setMinValues(1)
+    .setMaxValues(1)
+    .addOptions(WORLD_LOCATION_TYPES);
+
   const payload = {
     content:
       `Editing **${location.name}**\n` +
-      `Current type: **${pretty(location.location_type)}**\n\n` +
-      "Choose the correct type. This becomes a manual override if the channel does not have a valid `lifeline:type=` topic tag.",
-    components: buildLocationTypeRows(location.id),
+      `Discord type: **${pretty(location.discord_object_type)}**\n` +
+      `Current location type: **${currentType}**\n\n` +
+      `Choose the correct location type below.\n\n` +
+      `Use the dropdown for a standard type, or press **✏️ Custom / Other Type** below to type your own.`,
+    components: [
+      new ActionRowBuilder().addComponents(typePicker),
+      new ActionRowBuilder().addComponents(
+        new ButtonBuilder()
+          .setCustomId(`${WORLD_PREFIX}:custom_open:${location.id}`)
+          .setLabel("✏️ Custom / Other Type")
+          .setStyle(ButtonStyle.Secondary)
+      ),
+    ],
   };
 
-  if (
-    interaction.isStringSelectMenu() ||
-    interaction.isChannelSelectMenu()
-  ) {
-    return interaction.deferred
-      ? interaction.editReply(payload)
-      : interaction.update(payload);
+  if (interaction.isStringSelectMenu() || interaction.isChannelSelectMenu()) {
+    return interaction.deferred ? interaction.editReply(payload) : interaction.update(payload);
   }
 
-  if (interaction.deferred || interaction.replied) {
-    return interaction.editReply(payload);
-  }
-
-  return interaction.reply({
-    ...payload,
-    flags: MessageFlags.Ephemeral,
-  });
+  return interaction.reply({ ...payload, flags: MessageFlags.Ephemeral });
 }
 
 async function saveWorldLocationType(interaction, locationId, newType) {
+  if (newType === "other") {
+    return openCustomLocationTypeModal(interaction, locationId);
+  }
+
   await interaction.deferUpdate();
-
-  if (!SUPPORTED_LOCATION_TYPES.has(newType)) {
-    return interaction.editReply({
-      content: "That is not a supported LifeLine location type.",
-      components: [],
-    });
-  }
-
-  const { data: existing, error: loadError } = await supabase
-    .from("npc_world_locations")
-    .select("id,name,discord_channel_id,metadata")
-    .eq("guild_id", interaction.guildId)
-    .eq("id", locationId)
-    .single();
-
-  if (loadError) {
-    return interaction.editReply({
-      content: `Could not load location: ${loadError.message}`,
-      components: [],
-    });
-  }
-
-  const metadata = {
-    ...(existing.metadata || {}),
-    manual_override: true,
-    tag_status: "manual_override",
-    unknown_reason: null,
-    unknown_alert_signature: null,
-    ignored_unknown: false,
-  };
 
   const { data, error } = await supabase
     .from("npc_world_locations")
     .update({
       location_type: newType,
+      custom_type_key: null,
+      custom_type_name: null,
+      custom_type_description: null,
+      is_custom_type: false,
       auto_classified: false,
       admin_confirmed: true,
-      metadata,
     })
     .eq("guild_id", interaction.guildId)
     .eq("id", locationId)
-    .select("id,name,location_type,location_subtype,metadata")
+    .select("name,location_type")
     .single();
 
   if (error) {
@@ -2081,670 +948,160 @@ async function saveWorldLocationType(interaction, locationId, newType) {
     });
   }
 
-  await markUnknownNotificationResolved(
-    interaction.guild,
-    data,
-    `✅ Classified as **${pretty(data.location_type)}**`
-  );
-
   return interaction.editReply({
     content:
-      `✅ **${data.name}** is now classified as **${pretty(data.location_type)}**.\n\n` +
-      "Because this was selected manually, LifeLine will remember it even if the channel has no topic tag. A future valid `lifeline:type=` tag will take priority.",
+      `✅ **${data.name}** is now classified as **${pretty(data.location_type)}**.\n` +
+      `This admin correction will override LifeLine's automatic guess.`,
     components: [],
   });
 }
 
-async function openUnknownLocationClassifier(interaction, locationId) {
-  await interaction.deferReply({
-    flags: MessageFlags.Ephemeral,
-  });
+async function openCustomLocationTypeModal(interaction, locationId) {
+  const modal = new ModalBuilder()
+    .setCustomId(`${WORLD_PREFIX}:custom_type:${locationId}`)
+    .setTitle("Custom Location Type");
 
-  const { data, error } = await supabase
-    .from("npc_world_locations")
-    .select("id,name,location_type,discord_object_type,metadata")
-    .eq("guild_id", interaction.guildId)
-    .eq("id", locationId)
-    .single();
+  const typeName = new TextInputBuilder()
+    .setCustomId("custom_type_name")
+    .setLabel("What kind of location is this?")
+    .setPlaceholder("Dance Studio, Pet Spa, Arcade, Recording Studio...")
+    .setStyle(TextInputStyle.Short)
+    .setRequired(true)
+    .setMinLength(2)
+    .setMaxLength(80);
 
-  if (error || !data) {
-    return interaction.editReply({
-      content: error
-        ? `Could not load that unknown location: ${error.message}`
-        : "That unknown location no longer exists.",
-    });
-  }
+  const description = new TextInputBuilder()
+    .setCustomId("custom_type_description")
+    .setLabel("Description (optional)")
+    .setPlaceholder("What do NPCs normally do or find here?")
+    .setStyle(TextInputStyle.Paragraph)
+    .setRequired(false)
+    .setMaxLength(1000);
 
-  return showWorldLocationTypePicker(interaction, data.id, data);
-}
-
-async function ignoreUnknownLocation(interaction, locationId) {
-  await interaction.deferUpdate();
-
-  const { data, error } = await supabase
-    .from("npc_world_locations")
-    .select("id,name,metadata")
-    .eq("guild_id", interaction.guildId)
-    .eq("id", locationId)
-    .single();
-
-  if (error || !data) {
-    return interaction.editReply({
-      content: error
-        ? `Could not load that location: ${error.message}`
-        : "That location no longer exists.",
-      components: [],
-    });
-  }
-
-  const metadata = {
-    ...(data.metadata || {}),
-    ignored_unknown: true,
-  };
-
-  const { error: updateError } = await supabase
-    .from("npc_world_locations")
-    .update({ metadata })
-    .eq("id", data.id);
-
-  if (updateError) {
-    return interaction.editReply({
-      content: `Could not ignore that location: ${updateError.message}`,
-      components: [],
-    });
-  }
-
-  return interaction.editReply({
-    content:
-      `⏭️ **${data.name}** will stay unclassified and LifeLine will not keep sending unknown-location alerts for it.\n\n` +
-      "You can still classify it later from `/npc world setup`.",
-    embeds: [],
-    components: [],
-  });
-}
-
-function parseLifeLineTopic(channel) {
-  const topic =
-    typeof channel.topic === "string"
-      ? channel.topic
-      : "";
-
-  const lower = topic.toLowerCase();
-
-  const typeMatches = [
-    ...lower.matchAll(/(?:^|\s)lifeline:type=([a-z0-9_]+)/g),
-  ].map((match) => match[1]);
-
-  const uniqueTypes = [...new Set(typeMatches)];
-
-  const subtypeMatches = [
-    ...lower.matchAll(/(?:^|\s)lifeline:subtype=([a-z0-9_]+)/g),
-  ].map((match) => match[1]);
-
-  const uniqueSubtypes = [...new Set(subtypeMatches)];
-
-  const useMatches = [
-    ...lower.matchAll(/(?:^|\s)lifeline:use=([a-z0-9_]+)/g),
-  ].map((match) => match[1]);
-
-  const uses = [
-    ...new Set(
-      useMatches.filter((value) =>
-        SUPPORTED_LOCATION_USES.has(value)
-      )
-    ),
-  ];
-
-  const invalidUses = [
-    ...new Set(
-      useMatches.filter(
-        (value) => !SUPPORTED_LOCATION_USES.has(value)
-      )
-    ),
-  ];
-
-  const mentionsTypeTag = lower.includes("lifeline:type");
-  const mentionsSubtypeTag = lower.includes("lifeline:subtype");
-
-  if (uniqueTypes.length === 0) {
-    return {
-      status: mentionsTypeTag ? "malformed" : "missing",
-      type: null,
-      subtype: null,
-      uses,
-      invalidUses,
-      signature: `${mentionsTypeTag ? "malformed" : "missing"}:${topic}`,
-    };
-  }
-
-  if (uniqueTypes.length > 1) {
-    return {
-      status: "conflict",
-      type: null,
-      subtype: null,
-      uses,
-      invalidUses,
-      foundTypes: uniqueTypes,
-      signature: `conflict:${uniqueTypes.join(",")}:${topic}`,
-    };
-  }
-
-  const type = uniqueTypes[0];
-
-  if (!SUPPORTED_LOCATION_TYPES.has(type)) {
-    return {
-      status: "unsupported",
-      type,
-      subtype: null,
-      uses,
-      invalidUses,
-      signature: `unsupported:${type}:${topic}`,
-    };
-  }
-
-  if (uniqueSubtypes.length > 1) {
-    return {
-      status: "subtype_conflict",
-      type,
-      subtype: null,
-      uses,
-      invalidUses,
-      foundSubtypes: uniqueSubtypes,
-      signature: `subtype_conflict:${type}:${uniqueSubtypes.join(",")}:${topic}`,
-    };
-  }
-
-  let subtype = uniqueSubtypes[0] || null;
-  let invalidSubtype = null;
-
-  if (mentionsSubtypeTag && uniqueSubtypes.length === 0) {
-    invalidSubtype = "malformed";
-  } else if (subtype) {
-    const allowed = SUPPORTED_LOCATION_SUBTYPES[type];
-    if (!allowed || !allowed.has(subtype)) {
-      invalidSubtype = subtype;
-      subtype = null;
-    }
-  }
-
-  const hasWarning =
-    invalidUses.length > 0 ||
-    invalidSubtype !== null;
-
-  return {
-    status: hasWarning ? "valid_with_warning" : "valid",
-    type,
-    subtype,
-    invalidSubtype,
-    uses,
-    invalidUses,
-    signature:
-      `valid:${type}:${subtype || ""}:${invalidSubtype || ""}:` +
-      `${uses.join(",")}:${invalidUses.join(",")}`,
-  };
-}
-
-function isWorldChannelCandidate(channel) {
-  return (
-    channel &&
-    channel.guild &&
-    WORLD_CHANNEL_TYPES.has(channel.type) &&
-    channel.viewable !== false
+  modal.addComponents(
+    new ActionRowBuilder().addComponents(typeName),
+    new ActionRowBuilder().addComponents(description)
   );
+
+  return interaction.showModal(modal);
 }
 
-function unknownReasonText(parsed) {
-  if (parsed.status === "missing") {
-    return "No `lifeline:type=` tag was found in the channel topic.";
+async function saveCustomLocationType(interaction, locationId) {
+  await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+
+  const customTypeName = interaction.fields.getTextInputValue("custom_type_name").trim();
+  const customTypeDescription = interaction.fields.getTextInputValue("custom_type_description").trim();
+
+  if (!customTypeName) {
+    return interaction.editReply({ content: "You need to enter a custom location type." });
   }
 
-  if (parsed.status === "malformed") {
-    return "A `lifeline:type` tag appears to be present, but it is malformed.";
+  const customTypeKey = normalizeCustomLocationType(customTypeName);
+
+  const { data, error } = await supabase
+    .from("npc_world_locations")
+    .update({
+      location_type: "other",
+      custom_type_key: customTypeKey,
+      custom_type_name: customTypeName,
+      custom_type_description: customTypeDescription || null,
+      is_custom_type: true,
+      auto_classified: false,
+      admin_confirmed: true,
+    })
+    .eq("guild_id", interaction.guildId)
+    .eq("id", locationId)
+    .select("id,name,location_type,custom_type_key,custom_type_name,custom_type_description")
+    .single();
+
+  if (error) {
+    return interaction.editReply({ content: `Could not save custom location: ${error.message}` });
   }
 
-  if (parsed.status === "unsupported") {
-    return `The topic uses unsupported type \`${parsed.type}\`.`;
+  let response =
+    `✅ **${data.name}** is now classified as **${data.custom_type_name}**.\n\n` +
+    `Life Line will recognize **${data.custom_type_name}** as the actual location type instead of simply treating it as Other.`;
+
+  if (data.custom_type_description) {
+    response += `\n\n**Description:** ${data.custom_type_description}`;
   }
 
-  if (parsed.status === "conflict") {
-    return `The topic contains conflicting LifeLine types: ${parsed.foundTypes
-      .map((value) => `\`${value}\``)
-      .join(", ")}.`;
-  }
-
-  if (parsed.status === "subtype_conflict") {
-    return `The topic contains conflicting LifeLine subtypes: ${parsed.foundSubtypes
-      .map((value) => `\`${value}\``)
-      .join(", ")}.`;
-  }
-
-  if (parsed.status === "valid_with_warning") {
-    const problems = [];
-
-    if (parsed.invalidSubtype === "malformed") {
-      problems.push("the `lifeline:subtype=` tag is malformed");
-    } else if (parsed.invalidSubtype) {
-      problems.push(
-        `subtype \`${parsed.invalidSubtype}\` is not supported for type \`${parsed.type}\``
-      );
-    }
-
-    if (parsed.invalidUses?.length) {
-      problems.push(
-        `unsupported \`lifeline:use=\` values: ${parsed.invalidUses
-          .map((value) => `\`${value}\``)
-          .join(", ")}`
-      );
-    }
-
-    return `The location type is valid, but ${problems.join(" and ")}.`;
-  }
-
-  return "LifeLine could not classify this location.";
+  return interaction.editReply({ content: response });
 }
 
-export async function syncWorldChannel(
-  guild,
-  channel,
-  { notifyUnknown = true } = {}
-) {
-  if (!isWorldChannelCandidate(channel)) {
-    return {
-      status: "ignored_channel_type",
-      location: null,
-    };
-  }
+async function scanWorld(interaction) {
+  await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
-  const parsed = parseLifeLineTopic(channel);
+  const guild = interaction.guild;
+  await guild.channels.fetch();
 
-  const { data: existing, error: existingError } =
-    await supabase
-      .from("npc_world_locations")
-      .select("id,name,location_type,location_subtype,metadata")
-      .eq("guild_id", guild.id)
-      .eq("discord_channel_id", channel.id)
-      .maybeSingle();
+  let saved = 0;
 
-  if (existingError) {
-    throw existingError;
-  }
+  for (const channel of guild.channels.cache.values()) {
+    if (!channel) continue;
 
-  const oldMetadata = existing?.metadata || {};
-  const areaName = channel.parent?.name || null;
+    const objectType =
+      channel.type === ChannelType.GuildCategory
+        ? "category"
+        : channel.isThread?.()
+        ? "thread"
+        : channel.type === ChannelType.GuildForum
+        ? "forum"
+        : "channel";
 
-  if (
-    (parsed.status === "valid" ||
-      parsed.status === "valid_with_warning") &&
-    parsed.type
-  ) {
-    const metadata = {
-      ...oldMetadata,
-      tag_status: parsed.status,
-      lifeline_type: parsed.type,
-      lifeline_subtype: parsed.subtype,
-      invalid_lifeline_subtype: parsed.invalidSubtype || null,
-      lifeline_uses: parsed.uses,
-      invalid_lifeline_uses: parsed.invalidUses,
-      area_name: areaName,
-      manual_override: false,
-      ignored_unknown: false,
-      unknown_reason:
-        parsed.status === "valid_with_warning"
-          ? unknownReasonText(parsed)
-          : null,
-      unknown_alert_signature:
-        parsed.status === "valid_with_warning"
-          ? oldMetadata.unknown_alert_signature || null
-          : null,
-    };
+    const guessedType = guessLocationType(channel);
 
     const row = {
-      guild_id: guild.id,
+      guild_id: interaction.guildId,
       discord_channel_id: channel.id,
       parent_discord_category_id: channel.parentId || null,
       name: channel.name,
       channel_name: channel.name,
-      channel_topic: channel.topic || null,
-      location_type: parsed.type,
-      location_subtype: parsed.subtype,
-      discord_object_type:
-        channel.type === ChannelType.GuildForum
-          ? "forum"
-          : "channel",
-      auto_classified: false,
-      admin_confirmed: true,
-      metadata,
+      channel_topic: "topic" in channel ? channel.topic || null : null,
+      location_type: guessedType,
+      discord_object_type: objectType,
+      auto_classified: true,
+      admin_confirmed: false,
+      is_custom_type: false,
     };
 
-    const { data: location, error } = await supabase
+    const { error } = await supabase
       .from("npc_world_locations")
-      .upsert(row, {
-        onConflict: "guild_id,discord_channel_id",
-      })
-      .select("id,name,location_type,location_subtype,metadata")
-      .single();
+      .upsert(row, { onConflict: "guild_id,discord_channel_id" });
 
-    if (error) throw error;
-
-    if (
-      parsed.status === "valid_with_warning" &&
-      notifyUnknown
-    ) {
-      await maybeSendUnknownLocationNotice(
-        guild,
-        channel,
-        location,
-        parsed
-      );
-    }
-
-    return {
-      status: parsed.status,
-      location,
-    };
-  }
-
-  // If an admin manually classified an untagged channel, preserve it.
-  if (
-    existing &&
-    oldMetadata.manual_override === true &&
-    parsed.status === "missing"
-  ) {
-    const metadata = {
-      ...oldMetadata,
-      area_name: areaName,
-      tag_status: "manual_override",
-    };
-
-    const { data: location, error } = await supabase
-      .from("npc_world_locations")
-      .update({
-        name: channel.name,
-        channel_name: channel.name,
-        channel_topic: channel.topic || null,
-        parent_discord_category_id: channel.parentId || null,
-        metadata,
-      })
-      .eq("id", existing.id)
-      .select("id,name,location_type,location_subtype,metadata")
-      .single();
-
-    if (error) throw error;
-
-    return {
-      status: "manual_override",
-      location,
-    };
-  }
-
-  const reason = unknownReasonText(parsed);
-
-  const metadata = {
-    ...oldMetadata,
-    tag_status: parsed.status,
-    lifeline_type: parsed.type || null,
-    lifeline_uses: parsed.uses,
-    invalid_lifeline_uses: parsed.invalidUses,
-    area_name: areaName,
-    manual_override: false,
-    unknown_reason: reason,
-  };
-
-  const row = {
-    guild_id: guild.id,
-    discord_channel_id: channel.id,
-    parent_discord_category_id: channel.parentId || null,
-    name: channel.name,
-    channel_name: channel.name,
-    channel_topic: channel.topic || null,
-    location_type: "unknown",
-    discord_object_type:
-      channel.type === ChannelType.GuildForum
-        ? "forum"
-        : "channel",
-    auto_classified: false,
-    admin_confirmed: false,
-    metadata,
-  };
-
-  const { data: location, error } = await supabase
-    .from("npc_world_locations")
-    .upsert(row, {
-      onConflict: "guild_id,discord_channel_id",
-    })
-    .select("id,name,location_type,location_subtype,metadata")
-    .single();
-
-  if (error) throw error;
-
-  if (
-    notifyUnknown &&
-    location.metadata?.ignored_unknown !== true
-  ) {
-    await maybeSendUnknownLocationNotice(
-      guild,
-      channel,
-      location,
-      parsed
-    );
-  }
-
-  return {
-    status: parsed.status,
-    location,
-  };
-}
-
-async function maybeSendUnknownLocationNotice(
-  guild,
-  channel,
-  location,
-  parsed
-) {
-  const signature = parsed.signature;
-
-  if (
-    location.metadata?.unknown_alert_signature ===
-    signature
-  ) {
-    return;
-  }
-
-  const settings = await ensureGuildSettings(guild.id);
-
-  if (!settings.admin_notifications_channel_id) {
-    return;
-  }
-
-  const adminChannel =
-    guild.channels.cache.get(
-      settings.admin_notifications_channel_id
-    ) ||
-    await guild.channels
-      .fetch(settings.admin_notifications_channel_id)
-      .catch(() => null);
-
-  if (!adminChannel?.isTextBased?.()) {
-    return;
-  }
-
-  const classify = new ButtonBuilder()
-    .setCustomId(
-      `${WORLD_PREFIX}:unknown_classify:${location.id}`
-    )
-    .setLabel("Classify Location")
-    .setStyle(ButtonStyle.Primary);
-
-  const ignore = new ButtonBuilder()
-    .setCustomId(
-      `${WORLD_PREFIX}:unknown_ignore:${location.id}`
-    )
-    .setLabel("Ignore for Now")
-    .setStyle(ButtonStyle.Secondary);
-
-  const reason = unknownReasonText(parsed);
-
-  const message = await adminChannel
-    .send({
-      embeds: [
-        new EmbedBuilder()
-          .setTitle("⚠️ Unknown Location")
-          .setDescription(
-            `Channel: <#${channel.id}>\n` +
-            `Category/Area: **${channel.parent?.name || "None"}**\n\n` +
-            `${reason}\n\n` +
-            "Add a topic tag such as `lifeline:type=store`, or classify it below."
-          )
-          .setFooter({
-            text: "LifeLine Unknown Location Inbox",
-          }),
-      ],
-      components: [
-        new ActionRowBuilder().addComponents(
-          classify,
-          ignore
-        ),
-      ],
-    })
-    .catch(() => null);
-
-  if (!message) return;
-
-  const metadata = {
-    ...(location.metadata || {}),
-    unknown_alert_signature: signature,
-    unknown_alerted_at: new Date().toISOString(),
-    unknown_alert_message_id: message.id,
-    unknown_alert_channel_id: adminChannel.id,
-  };
-
-  await supabase
-    .from("npc_world_locations")
-    .update({ metadata })
-    .eq("id", location.id);
-}
-
-async function markUnknownNotificationResolved(
-  guild,
-  location,
-  resolutionText
-) {
-  const metadata = location.metadata || {};
-  const messageId = metadata.unknown_alert_message_id;
-  const channelId = metadata.unknown_alert_channel_id;
-
-  if (!messageId || !channelId) return;
-
-  const channel =
-    guild.channels.cache.get(channelId) ||
-    await guild.channels.fetch(channelId).catch(() => null);
-
-  if (!channel?.isTextBased?.()) return;
-
-  const message = await channel.messages
-    .fetch(messageId)
-    .catch(() => null);
-
-  if (!message) return;
-
-  await message
-    .edit({
-      embeds: [
-        new EmbedBuilder()
-          .setTitle("✅ Location Resolved")
-          .setDescription(
-            `**${location.name}**\n${resolutionText}`
-          )
-          .setFooter({
-            text: "LifeLine Unknown Location Inbox",
-          }),
-      ],
-      components: [],
-    })
-    .catch(() => null);
-}
-
-async function scanWorld(interaction) {
-  const guild = interaction.guild;
-  await guild.channels.fetch();
-
-  let tagged = 0;
-  let overrides = 0;
-  let unknown = 0;
-  let warnings = 0;
-  let ignored = 0;
-  let errors = 0;
-
-  for (const channel of guild.channels.cache.values()) {
-    if (!isWorldChannelCandidate(channel)) {
-      ignored += 1;
-      continue;
-    }
-
-    try {
-      const result = await syncWorldChannel(
-        guild,
-        channel,
-        { notifyUnknown: true }
-      );
-
-      if (result.status === "valid") tagged += 1;
-      else if (result.status === "valid_with_warning")
-        warnings += 1;
-      else if (result.status === "manual_override")
-        overrides += 1;
-      else unknown += 1;
-    } catch (error) {
-      errors += 1;
-      console.error(
-        `World scan error for ${channel.name}:`,
-        error
-      );
-    }
+    if (!error) saved += 1;
   }
 
   return interaction.editReply({
-    content:
-      `✅ **World scan finished.**\n\n` +
-      `Tagged locations: **${tagged}**\n` +
-      `Manual overrides: **${overrides}**\n` +
-      `Tag warnings: **${warnings}**\n` +
-      `Unknown/unclassified: **${unknown}**\n` +
-      `Ignored non-location channel types: **${ignored}**\n` +
-      `Errors: **${errors}**\n\n` +
-      "Unknown locations are sent to the configured **Admin Notifications** channel when available.",
+    content: `✅ World scan finished. Saved/updated **${saved}** Discord locations.`,
   });
 }
 
 async function reviewWorld(interaction) {
+  await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+
   const { data, error } = await supabase
     .from("npc_world_locations")
-    .select("id,name,location_type,location_subtype,discord_object_type,admin_confirmed,metadata")
+    .select("id,name,location_type,discord_object_type,admin_confirmed,custom_type_name,is_custom_type")
     .eq("guild_id", interaction.guildId)
     .order("name", { ascending: true })
     .limit(25);
 
-  if (error) {
-    return interaction.editReply(
-      `Could not load world registry: ${error.message}`
-    );
-  }
+  if (error) return interaction.editReply(`Could not load world registry: ${error.message}`);
 
   if (!data?.length) {
     return interaction.editReply(
-      "No world locations are saved yet. Run `/npc world setup` and press **Scan Tagged Locations**."
+      "No world locations are saved yet. Run `/npc world setup` and press **Scan Server**."
     );
   }
 
   const lines = data.map((loc) => {
-    const tagStatus =
-      loc.metadata?.tag_status || "unknown";
+    const displayType =
+      loc.is_custom_type && loc.custom_type_name
+        ? `${loc.custom_type_name} 🧩`
+        : pretty(loc.location_type);
 
-    return (
-      `• **${loc.name}** → ${pretty(loc.location_type)}` +
-      `${loc.location_subtype ? ` / ${pretty(loc.location_subtype)}` : ""}` +
-      ` • ${pretty(tagStatus)}`
-    );
+    return `• **${loc.name}** → ${displayType}${loc.admin_confirmed ? " ✅" : ""}`;
   });
 
   const picker = new StringSelectMenuBuilder()
@@ -2753,14 +1110,18 @@ async function reviewWorld(interaction) {
     .setMinValues(1)
     .setMaxValues(1)
     .addOptions(
-      data.map((loc) => ({
-        label: loc.name.slice(0, 100),
-        description:
-          `${pretty(loc.location_type)}${loc.location_subtype ? ` / ${pretty(loc.location_subtype)}` : ""} • ${pretty(
-            loc.metadata?.tag_status || "unknown"
-          )}`.slice(0, 100),
-        value: loc.id,
-      }))
+      data.map((loc) => {
+        const displayType =
+          loc.is_custom_type && loc.custom_type_name
+            ? loc.custom_type_name
+            : pretty(loc.location_type);
+
+        return {
+          label: loc.name.slice(0, 100),
+          description: `${pretty(loc.discord_object_type)} • ${displayType}`.slice(0, 100),
+          value: loc.id,
+        };
+      })
     );
 
   return interaction.editReply({
@@ -2769,13 +1130,60 @@ async function reviewWorld(interaction) {
         .setTitle("World Registry")
         .setDescription(
           lines.join("\n") +
-          "\n\n**Choose any saved location below to edit it.**"
+          "\n\n**Choose any location below to edit its classification.**"
         ),
     ],
-    components: [
-      new ActionRowBuilder().addComponents(picker),
-    ],
+    components: [new ActionRowBuilder().addComponents(picker)],
   });
+}
+
+function guessLocationType(channel) {
+  const text = `${channel.name || ""} ${"topic" in channel ? channel.topic || "" : ""}`.toLowerCase();
+
+  const explicitMatch = text.match(/lifeline:type=([a-z0-9_]+)/i);
+  if (explicitMatch) {
+    const explicitType = explicitMatch[1].toLowerCase();
+    if (SUPPORTED_LOCATION_TYPES.has(explicitType)) return explicitType;
+  }
+
+  if (channel.type === ChannelType.GuildCategory) {
+    if (/(heights|neighborhood|district|village|estates|apartments|residential)/.test(text)) {
+      return "neighborhood";
+    }
+    return "other";
+  }
+
+  if (/(vet|veterinary|animal hospital|animal clinic)/.test(text)) return "vet_clinic";
+  if (/(pet store|pet shop|pet supply|pet supplies)/.test(text)) return "pet_store";
+  if (/(dog park|pet park|puppy park)/.test(text)) return "pet_park";
+  if (/(pet groom|dog groom|grooming salon|animal groom)/.test(text)) return "pet_groomer";
+  if (/(pet daycare|dog daycare|doggy daycare|pet boarding|kennel)/.test(text)) return "pet_daycare";
+  if (/(animal shelter|pet shelter|animal rescue|pet rescue|humane society)/.test(text)) return "animal_shelter";
+  if (/(pet cafe|pet café|cat cafe|cat café|dog cafe|dog café|pet-friendly cafe|pet-friendly café)/.test(text)) return "pet_cafe";
+
+  if (/(school|academy|high-school|middle-school|elementary|university|college)/.test(text)) return "school";
+  if (/(mall|shopping-center)/.test(text)) return "mall";
+  if (/(park|playground)/.test(text)) return "park";
+  if (/(hospital|clinic|medical|doctor)/.test(text)) return "hospital_clinic";
+  if (/(gym|fitness)/.test(text)) return "gym";
+  if (/(cafe|café|coffee|restaurant|diner|grill|bar-and-grill|bakery)/.test(text)) return "restaurant_cafe";
+  if (/(store|shop|market|mart|boutique|target|walmart)/.test(text)) return "store";
+  if (/(station|bus|train|transit|metro|airport)/.test(text)) return "transit";
+  if (/(church|community-center|mosque|temple)/.test(text)) return "religious_community";
+  if (/(theater|cinema|club|arcade|bowling|museum)/.test(text)) return "entertainment";
+  if (/(house|home|apartment|apt-|residence|lane|street|avenue|drive)/.test(text)) return "residence";
+
+  return "unknown";
+}
+
+function normalizeCustomLocationType(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "")
+    .slice(0, 80);
 }
 
 function lifeStageFromAge(age) {
